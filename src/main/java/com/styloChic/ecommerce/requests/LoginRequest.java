@@ -1,12 +1,6 @@
 package com.styloChic.ecommerce.requests;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-
 public class LoginRequest {
 
     private String email;

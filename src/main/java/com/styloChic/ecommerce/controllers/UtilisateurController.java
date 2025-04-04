@@ -25,10 +25,19 @@ public class UtilisateurController {
         return new ResponseEntity<Utilisateur>(utilisateur, HttpStatus.ACCEPTED);
     }
 
+
+
+
     @GetMapping("/admin")
     public ResponseEntity<List<Utilisateur>> obtenirTousUtilisateurs(@RequestHeader("Authorization") String jwt) throws UtilisateurException {
         List<Utilisateur> utilisateurs = utilisateurService.chercherTousUtilisateurs(jwt);
         return new ResponseEntity<>(utilisateurs, HttpStatus.OK);
+    }
+
+    @GetMapping("/admin/{id}")
+    public ResponseEntity<Utilisateur> chercherUtilisateurParId(@PathVariable Long id, @RequestHeader("Authorization") String jwt) throws UtilisateurException {
+        Utilisateur utilisateur = utilisateurService.chercherUtilisateurParId(id, jwt);
+        return new ResponseEntity<>(utilisateur, HttpStatus.OK);
     }
 
     @PutMapping("/admin/{id}/roleUtilisateur")

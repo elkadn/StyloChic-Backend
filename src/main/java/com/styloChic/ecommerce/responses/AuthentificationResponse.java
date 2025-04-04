@@ -1,8 +1,5 @@
 package com.styloChic.ecommerce.responses;
 
-
-
-
 public class AuthentificationResponse {
 
     private String jwt;

@@ -26,14 +26,7 @@ public class UtilisateurServiceImplementation implements UtilisateurService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @Override
-    public Utilisateur chercherUtilisateurParId(Long utilisateurId) throws UtilisateurException {
-        Optional<Utilisateur> utilisateur = utilisateurRepository.findById(utilisateurId);
-        if(utilisateur.isPresent()){
-            return utilisateur.get();
-        }
-        throw new UtilisateurException("Aucun utilisateur trouvé avec id : "+utilisateurId+ " !");
-    }
+
 
     @Override
     public Utilisateur chercherProfileUtilisateurParJwt(String jwt) throws UtilisateurException {
@@ -41,9 +34,27 @@ public class UtilisateurServiceImplementation implements UtilisateurService {
         Utilisateur utilisateur = utilisateurRepository.chercherParEmail(email);
 
         if(utilisateur == null){
-            throw new UtilisateurException("Aucun utilisateur trouvé avec l'email : "+email+ " !");
+            throw new UtilisateurException("Utilisateur non existant avec email "+email+" !");
         }
         return utilisateur;
+    }
+
+    @Override
+    public Utilisateur chercherUtilisateurParId(Long utilisateurId, String jwt) throws UtilisateurException {
+        String adminEmail = jwtProvider.getEmailFromToken(jwt);
+        Utilisateur admin = utilisateurRepository.chercherParEmail(adminEmail);
+
+        if (admin == null || !admin.getRole().equals("ADMIN")) {
+            throw new UtilisateurException("Accès interdit : vous devez être un administrateur pour effectuer cette action !");
+        }
+
+        Optional<Utilisateur> utilisateurOptionel = utilisateurRepository.findById(utilisateurId);
+
+        if (utilisateurOptionel.isEmpty()) {
+            throw new UtilisateurException("Utilisateur non existant avec id "+utilisateurId+" !");
+        }
+
+        return utilisateurOptionel.get();
     }
 
     @Override
@@ -53,7 +64,7 @@ public class UtilisateurServiceImplementation implements UtilisateurService {
         Utilisateur admin = utilisateurRepository.chercherParEmail(adminEmail);
 
         if (admin == null || !admin.getRole().equals("ADMIN")) {
-            throw new UtilisateurException("L'utilisateur qui veut consulter les utilisateurs n'est pas un admin !");
+            throw new UtilisateurException("Accès interdit : vous devez être un administrateur pour effectuer cette action !");
         }
 
         return utilisateurRepository.findAll();
@@ -74,7 +85,7 @@ public class UtilisateurServiceImplementation implements UtilisateurService {
         Utilisateur admin = utilisateurRepository.chercherParEmail(adminEmail);
 
         if (admin == null || !admin.getRole().equals("ADMIN")) {
-            throw new UtilisateurException("L'utilisateur qui effectue la modification n'est pas un admin !");
+            throw new UtilisateurException("Accès interdit : vous devez être un administrateur pour effectuer cette action !");
         }
 
         utilisateur.setAdmin(admin);
@@ -100,7 +111,7 @@ public class UtilisateurServiceImplementation implements UtilisateurService {
         Utilisateur admin = utilisateurRepository.chercherParEmail(adminEmail);
 
         if (admin == null || !admin.getRole().equals("ADMIN")) {
-            throw new UtilisateurException("L'utilisateur qui effectue la création n'est pas un admin !");
+            throw new UtilisateurException("Accès interdit : vous devez être un administrateur pour effectuer cette action !");
         }
 
         Utilisateur emailExisteDeja = utilisateurRepository.chercherParEmail(utilisateur.getEmail());
@@ -129,7 +140,7 @@ public class UtilisateurServiceImplementation implements UtilisateurService {
         Utilisateur admin = utilisateurRepository.chercherParEmail(adminEmail);
 
         if (admin == null || !admin.getRole().equals("ADMIN")) {
-            throw new UtilisateurException("L'utilisateur qui effectue la suppression n'est pas un admin !");
+            throw new UtilisateurException("Accès interdit : vous devez être un administrateur pour effectuer cette action !");
         }
 
         utilisateurRepository.delete(utilisateurOptionel.get());
@@ -149,7 +160,7 @@ public class UtilisateurServiceImplementation implements UtilisateurService {
         Utilisateur admin = utilisateurRepository.chercherParEmail(adminEmail);
 
         if (admin == null || !admin.getRole().equals("ADMIN")) {
-            throw new UtilisateurException("L'utilisateur qui effectue la modification n'est pas un admin !");
+            throw new UtilisateurException("Accès interdit : vous devez être un administrateur pour effectuer cette action !");
         }
 
         utilisateurExistants.setPrenom(utilisateur.getPrenom());

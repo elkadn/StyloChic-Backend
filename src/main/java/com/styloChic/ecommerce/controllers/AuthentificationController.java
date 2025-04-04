@@ -48,9 +48,7 @@ public class AuthentificationController {
 
         Utilisateur emailExisteDeja = userRepository.chercherParEmail(email);
         if (emailExisteDeja != null) {
-            AuthentificationResponse response = new AuthentificationResponse();
-            response.setMessage("L'email est déjà utilisé par un autre compte !");
-            return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+            throw new UtilisateurException("L'email est déjà utilisé par un autre compte !");
         }
 
 

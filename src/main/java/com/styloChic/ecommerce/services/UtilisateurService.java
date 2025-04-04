@@ -7,7 +7,7 @@ import com.styloChic.ecommerce.models.Utilisateur;
 import java.util.List;
 
 public interface UtilisateurService {
-    public Utilisateur chercherUtilisateurParId(Long utilisateurId) throws UtilisateurException;
+    public Utilisateur chercherUtilisateurParId(Long utilisateurId, String jwt) throws UtilisateurException;
 
     public Utilisateur chercherProfileUtilisateurParJwt(String jwt) throws UtilisateurException;
 

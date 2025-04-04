@@ -1,8 +1,5 @@
 package com.styloChic.ecommerce.responses;
 
-import lombok.*;
-
-
 public class ApiResponse {
 
     private String message;
