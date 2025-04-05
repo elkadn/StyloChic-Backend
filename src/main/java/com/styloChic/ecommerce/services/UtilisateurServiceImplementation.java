@@ -58,6 +58,18 @@ public class UtilisateurServiceImplementation implements UtilisateurService {
     }
 
     @Override
+    public Utilisateur chercherUtilisateurParIdParticulier(Long utilisateurId) throws UtilisateurException {
+
+        Optional<Utilisateur> utilisateurOptionel = utilisateurRepository.findById(utilisateurId);
+
+        if (utilisateurOptionel.isEmpty()) {
+            throw new UtilisateurException("Utilisateur non existant avec id "+utilisateurId+" !");
+        }
+
+        return utilisateurOptionel.get();
+    }
+
+    @Override
     public List<Utilisateur> chercherTousUtilisateurs(String jwt) throws UtilisateurException {
 
         String adminEmail = jwtProvider.getEmailFromToken(jwt);

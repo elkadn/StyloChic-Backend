@@ -1,5 +1,6 @@
 package com.styloChic.ecommerce.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -16,7 +17,11 @@ public class Utilisateur {
     private String email;
     private String role;
     private String telephone;
+
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime dateCreation;
+
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime dateModification;
 
     @ManyToOne(fetch = FetchType.LAZY)

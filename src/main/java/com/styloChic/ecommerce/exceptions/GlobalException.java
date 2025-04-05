@@ -27,5 +27,53 @@ public class GlobalException {
         return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+
+    @ExceptionHandler(CategorieException.class)
+    public ResponseEntity<Object> CategorieException(CategorieException ex) {
+        if (ex.getMessage().contains("Accès interdit")) {
+            return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.FORBIDDEN);
+        }
+
+        if (ex.getMessage().contains("Catégorie parente introuvable") || ex.getMessage().contains("Catégorie non trouvée avec ID")) {
+            return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.NOT_FOUND);
+        }
+
+        if (ex.getMessage().contains("Catégorie déjà existante") || ex.getMessage().contains("Impossible de supprimer cette catégorie")) {
+            return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.CONFLICT);
+        }
+
+        return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(CouleurException.class)
+    public ResponseEntity<Object> CouleurException(CouleurException ex) {
+        if (ex.getMessage().contains("Accès interdit") || ex.getMessage().contains("pas autorisé")) {
+            return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.FORBIDDEN);
+        }
+
+        if (ex.getMessage().contains("Couleur introuvable") || ex.getMessage().contains("Couleur non trouvée avec l'ID")) {
+            return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.NOT_FOUND);
+        }
+
+        if (ex.getMessage().contains("Une autre couleur avec le nom") || ex.getMessage().contains("existe déjà")) {
+            return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.CONFLICT);
+        }
+
+        return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(ProduitException.class)
+    public ResponseEntity<Object> ProduitException(ProduitException ex) {
+        if (ex.getMessage().contains("Accès interdit")) {
+            return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.FORBIDDEN);
+        }
+
+        if (ex.getMessage().contains("introuvable") || ex.getMessage().contains("non trouvé")) {
+            return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 }
 
