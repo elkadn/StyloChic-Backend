@@ -1,9 +1,12 @@
 package com.styloChic.ecommerce.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Utilisateur {
@@ -29,12 +32,20 @@ public class Utilisateur {
     private Utilisateur admin;
 
 
+    @OneToMany(mappedBy = "utilisateur", cascade = CascadeType.ALL)
+    private List<Adresse> adresse = new ArrayList<>();
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "utilisateur",cascade = CascadeType.ALL)
+    private List<Avis> avis = new ArrayList<>();
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "utilisateur",cascade = CascadeType.ALL)
+    private List<Vote> votes = new ArrayList<>();
     public Utilisateur() {
     }
 
-    public Utilisateur(Long id, String prenom, String nom, String motDePasse, String email, String role, String telephone, LocalDateTime dateCreation, LocalDateTime dateModification,Utilisateur admin) {
+    public Utilisateur(Long id, String prenom, String nom, String motDePasse, String email, String role, String telephone, LocalDateTime dateCreation, LocalDateTime dateModification, Utilisateur admin, List<Adresse> adresse, List<Avis> avis, List<Vote> votes) {
         this.id = id;
         this.prenom = prenom;
         this.nom = nom;
@@ -45,6 +56,9 @@ public class Utilisateur {
         this.dateCreation = dateCreation;
         this.dateModification = dateModification;
         this.admin = admin;
+        this.adresse = adresse;
+        this.avis = avis;
+        this.votes = votes;
     }
 
     public Long getId() {
@@ -127,15 +141,27 @@ public class Utilisateur {
         this.admin = admin;
     }
 
-    //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-//    private List<Address> address = new ArrayList<>();
-//
-//
-//    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-//    @JsonIgnore
-//    private List<Rating> ratings = new ArrayList<>();
-//
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-//    private List<Review> reviews = new ArrayList<>();
+    public List<Adresse> getAdresse() {
+        return adresse;
+    }
+
+    public void setAdresse(List<Adresse> adresse) {
+        this.adresse = adresse;
+    }
+
+    public List<Avis> getAvis() {
+        return avis;
+    }
+
+    public void setAvis(List<Avis> avis) {
+        this.avis = avis;
+    }
+
+    public List<Vote> getVotes() {
+        return votes;
+    }
+
+    public void setVotes(List<Vote> votes) {
+        this.votes = votes;
+    }
 }

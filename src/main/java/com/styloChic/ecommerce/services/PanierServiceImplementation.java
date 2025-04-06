@@ -114,30 +114,6 @@ public class PanierServiceImplementation implements PanierService{
     @Override
     public Panier chercherPanierUtilisateur(Long utilisateurId) {
         Panier panier = panierRepository.chercherPanierParUtilisateurId(utilisateurId);
-
-        double totalTTC = 0;
-        double totalTTCReduit = 0;
-        double totalHT = 0;
-
-        int totalElements = 0;
-
-        for (ElementPanier elementPanier : panier.getElementsPanier()) {
-            totalTTC = totalTTC + elementPanier.getTotalHt();
-            totalTTCReduit = totalTTCReduit + elementPanier.getTotalTTCReduit();
-
-            totalHT = totalHT + elementPanier.getTotalHt();
-            totalElements = totalElements + elementPanier.getQuantite();
-        }
-
-        panier.setPrixTotalHt(totalHT);
-        panier.setPrixTotalTTC(totalTTC);
-        panier.setPrixTotalTTCReduit(totalTTCReduit);
-        panier.setTotalElement(totalElements);
-        panier.setMontantBase(totalTTC);
-        panier.setMontantReduit(totalTTC);
-        panier.setPourcentageReduction(0.00);
-
-
         return panier;
     }
 
