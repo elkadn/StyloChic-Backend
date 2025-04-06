@@ -1,113 +1,63 @@
-package com.styloChic.ecommerce.models;
+package com.styloChic.ecommerce.responses;
 
+import com.styloChic.ecommerce.models.Avis;
+import com.styloChic.ecommerce.models.ImageProduit;
+import com.styloChic.ecommerce.models.Taille;
+import com.styloChic.ecommerce.models.Vote;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import java.time.LocalDateTime;
-import java.util.*;
+public class BaseProduitResponse {
 
-@Entity
-public class Produit {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     private String titre;
-
     private String description;
-
-    @Column(name = "prix_achat")
-    private double prixAchat;
-
     private double tva;
-
-    @Column(name = "prix_vente_HT")
     private double prixVenteHT;
-
-    @Column(name = "prix_vente_TTC")
     private double prixVenteTTC;
-
-    @Column(name = "prix_vente_TTC_reduit")
     private double prixVenteTTCReduit;
-
-    @Column(name = "pourcentage_reduction")
-    private double pourcentageRduction;
-
-
-    @Column(name = "quantite_en_stock")
+    private double pourcentageReduction;
+    private String categorieParente;
+    private String categorieMoyenne;
+    private String categorieBase;
     private int quantiteEnStock;
-
-    @Column(name = "image_principale")
     private String imagePrincipale;
-
     private String saison;
-
-    @Column(name = "conseil_entretien")
     private String conseilEntretien;
-
-    @ManyToOne()
-    @JoinColumn(name = "categorie_id")
-    private Categorie categorie;
-
-    @ManyToOne
-    @JoinColumn(name = "couleur_id")
-    private Couleur couleur;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "admin_id")
-    private Utilisateur admin;
-
-    @Embedded
-    @ElementCollection
-    @CollectionTable(name = "tailles_produit", joinColumns = @JoinColumn(name = "id_produit"))
+    private String nomCouleur;
     private Set<Taille> tailles = new HashSet<>();
-
-    @OneToMany(mappedBy = "produit", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ImageProduit> imagesProduit = new ArrayList<>();
-
-
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime dateCreation;
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime dateModification;
-
-    @OneToMany(mappedBy = "produit",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Vote> votes = new ArrayList<>();
-
-    @OneToMany(mappedBy = "produit",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Avis> avis = new ArrayList<>();
-
-    @Column(name = "total_votes")
     private int total_votes;
-
-    @Column(name = "total_avis")
     private int total_avis;
-    public Produit() {
+
+
+    public BaseProduitResponse() {
     }
 
-    public Produit(Long id, String titre, String description, double prixAchat, double tva, double prixVenteHT, double prixVenteTTC,double prixVenteTTCReduit,double pourcentageRduction, int quantiteEnStock, String imagePrincipale, String saison, String conseilEntretien, Categorie categorie, Couleur couleur, Utilisateur admin, Set<Taille> tailles, List<ImageProduit> imagesProduit, LocalDateTime dateCreation, LocalDateTime dateModification, List<Vote> votes, List<Avis> avis, int total_votes, int total_avis) {
+    public BaseProduitResponse(Long id, String titre, String description, double tva, double prixVenteHT, double prixVenteTTC, double prixVenteTTCReduit, double pourcentageReduction, String categorieParente, String categorieMoyenne, String categorieBase, int quantiteEnStock, String imagePrincipale, String saison, String conseilEntretien, String nomCouleur, Set<Taille> tailles, List<ImageProduit> imagesProduit, List<Vote> votes, List<Avis> avis, int total_votes, int total_avis) {
         this.id = id;
         this.titre = titre;
         this.description = description;
-        this.prixAchat = prixAchat;
         this.tva = tva;
         this.prixVenteHT = prixVenteHT;
         this.prixVenteTTC = prixVenteTTC;
         this.prixVenteTTCReduit = prixVenteTTCReduit;
-        this.pourcentageRduction = pourcentageRduction;
+        this.pourcentageReduction = pourcentageReduction;
+        this.categorieParente = categorieParente;
+        this.categorieMoyenne = categorieMoyenne;
+        this.categorieBase = categorieBase;
         this.quantiteEnStock = quantiteEnStock;
         this.imagePrincipale = imagePrincipale;
         this.saison = saison;
         this.conseilEntretien = conseilEntretien;
-        this.categorie = categorie;
-        this.couleur = couleur;
-        this.admin = admin;
+        this.nomCouleur = nomCouleur;
         this.tailles = tailles;
         this.imagesProduit = imagesProduit;
-        this.dateCreation = dateCreation;
-        this.dateModification = dateModification;
         this.votes = votes;
         this.avis = avis;
         this.total_votes = total_votes;
@@ -138,14 +88,6 @@ public class Produit {
         this.description = description;
     }
 
-    public double getPrixAchat() {
-        return prixAchat;
-    }
-
-    public void setPrixAchat(double prixAchat) {
-        this.prixAchat = prixAchat;
-    }
-
     public double getTva() {
         return tva;
     }
@@ -168,6 +110,46 @@ public class Produit {
 
     public void setPrixVenteTTC(double prixVenteTTC) {
         this.prixVenteTTC = prixVenteTTC;
+    }
+
+    public double getPrixVenteTTCReduit() {
+        return prixVenteTTCReduit;
+    }
+
+    public void setPrixVenteTTCReduit(double prixVenteTTCReduit) {
+        this.prixVenteTTCReduit = prixVenteTTCReduit;
+    }
+
+    public double getPourcentageReduction() {
+        return pourcentageReduction;
+    }
+
+    public void setPourcentageReduction(double pourcentageReduction) {
+        this.pourcentageReduction = pourcentageReduction;
+    }
+
+    public String getCategorieParente() {
+        return categorieParente;
+    }
+
+    public void setCategorieParente(String categorieParente) {
+        this.categorieParente = categorieParente;
+    }
+
+    public String getCategorieMoyenne() {
+        return categorieMoyenne;
+    }
+
+    public void setCategorieMoyenne(String categorieMoyenne) {
+        this.categorieMoyenne = categorieMoyenne;
+    }
+
+    public String getCategorieBase() {
+        return categorieBase;
+    }
+
+    public void setCategorieBase(String categorieBase) {
+        this.categorieBase = categorieBase;
     }
 
     public int getQuantiteEnStock() {
@@ -202,28 +184,12 @@ public class Produit {
         this.conseilEntretien = conseilEntretien;
     }
 
-    public Categorie getCategorie() {
-        return categorie;
+    public String getNomCouleur() {
+        return nomCouleur;
     }
 
-    public void setCategorie(Categorie categorie) {
-        this.categorie = categorie;
-    }
-
-    public Couleur getCouleur() {
-        return couleur;
-    }
-
-    public void setCouleur(Couleur couleur) {
-        this.couleur = couleur;
-    }
-
-    public Utilisateur getAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(Utilisateur admin) {
-        this.admin = admin;
+    public void setNomCouleur(String nomCouleur) {
+        this.nomCouleur = nomCouleur;
     }
 
     public Set<Taille> getTailles() {
@@ -240,22 +206,6 @@ public class Produit {
 
     public void setImagesProduit(List<ImageProduit> imagesProduit) {
         this.imagesProduit = imagesProduit;
-    }
-
-    public LocalDateTime getDateCreation() {
-        return dateCreation;
-    }
-
-    public void setDateCreation(LocalDateTime dateCreation) {
-        this.dateCreation = dateCreation;
-    }
-
-    public LocalDateTime getDateModification() {
-        return dateModification;
-    }
-
-    public void setDateModification(LocalDateTime dateModification) {
-        this.dateModification = dateModification;
     }
 
     public List<Vote> getVotes() {
@@ -289,23 +239,4 @@ public class Produit {
     public void setTotal_avis(int total_avis) {
         this.total_avis = total_avis;
     }
-
-    public double getPrixVenteTTCReduit() {
-        return prixVenteTTCReduit;
-    }
-
-    public void setPrixVenteTTCReduit(double prixVenteTTCReduit) {
-        this.prixVenteTTCReduit = prixVenteTTCReduit;
-    }
-
-    public double getPourcentageRduction() {
-        return pourcentageRduction;
-    }
-
-    public void setPourcentageRduction(double pourcentageRduction) {
-        this.pourcentageRduction = pourcentageRduction;
-    }
 }
-
-
-

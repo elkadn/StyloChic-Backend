@@ -75,5 +75,43 @@ public class GlobalException {
         return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(ElementPanierException.class)
+    public ResponseEntity<Object> ElementPanierException(ElementPanierException ex) {
+        if (ex.getMessage().contains("Accès interdit") || ex.getMessage().contains("pas autorisé") || ex.getMessage().contains("Ce n'est pas votre")) {
+            return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.FORBIDDEN);
+        }
+
+        if (ex.getMessage().contains("non trouvé")) {
+            return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.NOT_FOUND);
+        }
+
+        if (ex.getMessage().contains("invalide")) {
+            return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.CONFLICT);
+        }
+
+        return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(CodeReductionException.class)
+    public ResponseEntity<Object> CodeReductionException(CodeReductionException ex) {
+        // Gestion des erreurs spécifiques en fonction du message retourné par le service
+        if (ex.getMessage().contains("Accès interdit")) {
+            return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.FORBIDDEN);
+        }
+
+        if (ex.getMessage().contains("non trouvé")) {
+            return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.NOT_FOUND);
+        }
+
+        if (ex.getMessage().contains("existe déjà")) {
+            return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.CONFLICT);
+        }
+
+        // Si aucun des cas ci-dessus ne correspond, on retourne une erreur interne
+        return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+
+
 }
 

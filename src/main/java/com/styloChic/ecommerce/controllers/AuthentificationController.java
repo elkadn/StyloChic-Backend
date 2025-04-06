@@ -2,10 +2,12 @@ package com.styloChic.ecommerce.controllers;
 
 import com.styloChic.ecommerce.config.JwtProvider;
 import com.styloChic.ecommerce.exceptions.UtilisateurException;
+import com.styloChic.ecommerce.models.Panier;
 import com.styloChic.ecommerce.models.Utilisateur;
 import com.styloChic.ecommerce.repositories.UtilisateurRepository;
 import com.styloChic.ecommerce.requests.LoginRequest;
 import com.styloChic.ecommerce.responses.AuthentificationResponse;
+import com.styloChic.ecommerce.services.PanierService;
 import com.styloChic.ecommerce.services.UtilisateurServiceParticulierImplementation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,14 +29,14 @@ public class AuthentificationController {
     private JwtProvider jwtProvider;
     private PasswordEncoder passwordEncoder;
     private UtilisateurServiceParticulierImplementation utilisateurServiceParticulier;
-    //private CartService cartService;
+    private PanierService panierService;
 
-    public AuthentificationController(UtilisateurRepository userRepository, UtilisateurServiceParticulierImplementation utilisateurServiceParticulier, PasswordEncoder passwordEncoder,JwtProvider jwtProvider) {
+    public AuthentificationController(UtilisateurRepository userRepository, UtilisateurServiceParticulierImplementation utilisateurServiceParticulier, PasswordEncoder passwordEncoder,JwtProvider jwtProvider,PanierService panierService) {
         this.userRepository = userRepository;
         this.utilisateurServiceParticulier = utilisateurServiceParticulier;
         this.passwordEncoder = passwordEncoder;
         this.jwtProvider = jwtProvider;
-        //this.cartService = cartService;
+        this.panierService = panierService;
     }
 
     @PostMapping("/inscription")
@@ -64,11 +66,11 @@ public class AuthentificationController {
         utilisateurCree.setRole("CLIENT");
         utilisateurCree.setAdmin(null);
 
-        Utilisateur savedUser = userRepository.save(utilisateurCree);
+        Utilisateur utilisateurEnregistre = userRepository.save(utilisateurCree);
 
-        //Cart cart = cartService.createCart(savedUser);
+        Panier panier = panierService.creerPanier(utilisateurEnregistre);
 
-        Authentication authentication = new UsernamePasswordAuthenticationToken(savedUser.getEmail(), savedUser.getMotDePasse());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(utilisateurEnregistre.getEmail(), utilisateurEnregistre.getMotDePasse());
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtProvider.generateToken(authentication);
 

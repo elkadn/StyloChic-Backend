@@ -12,8 +12,11 @@ public class CreationProduitRequest {
     private String conseilEntretien;
 
     private double prixAchat;
+
     private double prixVenteHT;
     private double tva;
+    private double pourcentageReduction;
+
 
     private Long couleurId;
 
@@ -26,7 +29,7 @@ public class CreationProduitRequest {
     public CreationProduitRequest() {
     }
 
-    public CreationProduitRequest(String titre, String description, String saison, String conseilEntretien, double prixAchat, double prixVenteHT, double tva, Long couleurId, Set<Taille> tailles, String imagePrincipale, Long categorieId) {
+    public CreationProduitRequest(String titre, String description, String saison, String conseilEntretien, double prixAchat, double prixVenteHT, double tva,double pourcentageReduction, Long couleurId, Set<Taille> tailles, String imagePrincipale, Long categorieId) {
         this.titre = titre;
         this.description = description;
         this.saison = saison;
@@ -38,6 +41,7 @@ public class CreationProduitRequest {
         this.tailles = tailles;
         this.imagePrincipale = imagePrincipale;
         this.categorieId = categorieId;
+        this.pourcentageReduction = pourcentageReduction;
     }
 
     public String getTitre() {
@@ -126,5 +130,13 @@ public class CreationProduitRequest {
 
     public void setCategorieId(Long categorieId) {
         this.categorieId = categorieId;
+    }
+
+    public double getPourcentageReduction() {
+        return pourcentageReduction;
+    }
+
+    public void setPourcentageReduction(double pourcentageReduction) {
+        this.pourcentageReduction = pourcentageReduction;
     }
 }

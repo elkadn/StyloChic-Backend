@@ -1,5 +1,6 @@
 package com.styloChic.ecommerce.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
@@ -10,6 +11,7 @@ public class ElementPanier {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "panier_id")
     private Panier panier;
@@ -27,6 +29,9 @@ public class ElementPanier {
     @Column(name = "total_ttc")
     private Double totalTTC;
 
+    @Column(name = "total_ttc_reduit")
+    private Double totalTTCReduit;
+
     private Double tva;
 
     private Long utilisateurId;
@@ -36,7 +41,7 @@ public class ElementPanier {
     public ElementPanier() {
     }
 
-    public ElementPanier(long id, Panier panier, Produit produit, String taille, int quantite, Double totalHt, Double totalTTC, Double tva,Long utilisateurId) {
+    public ElementPanier(long id, Panier panier, Produit produit, String taille, int quantite, Double totalHt, Double totalTTC, Double tva,Long utilisateurId,double totalTTCReduit) {
         this.id = id;
         this.panier = panier;
         this.produit = produit;
@@ -46,6 +51,7 @@ public class ElementPanier {
         this.totalTTC = totalTTC;
         this.tva = tva;
         this.utilisateurId = utilisateurId;
+        this.totalTTCReduit = totalTTCReduit;
     }
 
     public long getId() {
@@ -119,5 +125,13 @@ public class ElementPanier {
 
     public void setUtilisateurId(Long utilisateurId) {
         this.utilisateurId = utilisateurId;
+    }
+
+    public Double getTotalTTCReduit() {
+        return totalTTCReduit;
+    }
+
+    public void setTotalTTCReduit(Double totalTTCReduit) {
+        this.totalTTCReduit = totalTTCReduit;
     }
 }

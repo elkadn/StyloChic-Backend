@@ -3,14 +3,12 @@ package com.styloChic.ecommerce.requests;
 public class AjouterElementPanierRequest {
     private Long idProduit;
     private String taille;
-    private int quantite;
-    private Integer prixTotal;
+    private String operation;
 
-    public AjouterElementPanierRequest(Long idProduit, String taille, int quantite, Integer prixTotal) {
+    public AjouterElementPanierRequest(Long idProduit, String taille, String operation) {
         this.idProduit = idProduit;
         this.taille = taille;
-        this.quantite = quantite;
-        this.prixTotal = prixTotal;
+        this.operation = operation;
     }
 
     public Long getIdProduit() {
@@ -29,19 +27,11 @@ public class AjouterElementPanierRequest {
         this.taille = taille;
     }
 
-    public int getQuantite() {
-        return quantite;
+    public String getOperation() {
+        return operation;
     }
 
-    public void setQuantite(int quantite) {
-        this.quantite = quantite;
-    }
-
-    public Integer getPrixTotal() {
-        return prixTotal;
-    }
-
-    public void setPrixTotal(Integer prixTotal) {
-        this.prixTotal = prixTotal;
+    public void setOperation(String operation) {
+        this.operation = operation;
     }
 }

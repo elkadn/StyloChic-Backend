@@ -1,6 +1,7 @@
 package com.styloChic.ecommerce.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -13,6 +14,7 @@ public class Panier {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "utilisateur_id",nullable = false)
     private Utilisateur utilisateur;
@@ -25,6 +27,9 @@ public class Panier {
 
     @Column(name = "prix_total_ttc")
     private double prixTotalTTC;
+
+    @Column(name = "prix_total_ttc_reduit")
+    private double prixTotalTTCReduit;
 
     @Column(name = "tva")
     private double tva;
@@ -41,21 +46,26 @@ public class Panier {
     @Column(name = "montant_reduit")
     private double montantReduit;
 
+    @ManyToOne()
+    @JoinColumn(name = "code_reduction_id")
+    private CodeReduction codeReduction;
 
     public Panier() {
     }
 
-    public Panier(Long id, Utilisateur utilisateur, Set<ElementPanier> elementsPanier, double prixTotalHt, double prixTotalTTC, double tva, int totalElement, double pourcentageReduction, double montantBase, double montantReduit) {
+    public Panier(Long id, Utilisateur utilisateur, Set<ElementPanier> elementsPanier, double prixTotalHt, double prixTotalTTC, double prixTotalTTCReduit, double tva, int totalElement, double pourcentageReduction, double montantBase, double montantReduit, CodeReduction codeReduction) {
         this.id = id;
         this.utilisateur = utilisateur;
         this.elementsPanier = elementsPanier;
         this.prixTotalHt = prixTotalHt;
         this.prixTotalTTC = prixTotalTTC;
+        this.prixTotalTTCReduit = prixTotalTTCReduit;
         this.tva = tva;
         this.totalElement = totalElement;
         this.pourcentageReduction = pourcentageReduction;
         this.montantBase = montantBase;
         this.montantReduit = montantReduit;
+        this.codeReduction = codeReduction;
     }
 
     public Long getId() {
@@ -136,5 +146,21 @@ public class Panier {
 
     public void setMontantReduit(double montantReduit) {
         this.montantReduit = montantReduit;
+    }
+
+    public double getPrixTotalTTCReduit() {
+        return prixTotalTTCReduit;
+    }
+
+    public CodeReduction getCodeReduction() {
+        return codeReduction;
+    }
+
+    public void setCodeReduction(CodeReduction codeReduction) {
+        this.codeReduction = codeReduction;
+    }
+
+    public void setPrixTotalTTCReduit(double prixTotalTTCReduit) {
+        this.prixTotalTTCReduit = prixTotalTTCReduit;
     }
 }

@@ -3,40 +3,20 @@ package com.styloChic.ecommerce.responses;
 
 import java.time.LocalDateTime;
 
-public class ImageProduitAdminResponse {
+public class ImageProduitAdminResponse extends BaseImageProduitResponse{
 
-    private Long id;
-    private String image;
     private LocalDateTime dateCreation;
     private LocalDateTime dateModification;
-
     private String admin;
 
     public ImageProduitAdminResponse() {
     }
 
     public ImageProduitAdminResponse(Long id, String image, LocalDateTime dateCreation, LocalDateTime dateModification, String admin) {
-        this.id = id;
-        this.image = image;
+        super(id,image);
         this.dateCreation = dateCreation;
         this.dateModification = dateModification;
         this.admin = admin;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
     }
 
     public LocalDateTime getDateCreation() {

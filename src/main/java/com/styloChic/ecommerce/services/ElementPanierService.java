@@ -1,5 +1,6 @@
 package com.styloChic.ecommerce.services;
 
+import com.styloChic.ecommerce.dtos.QuantiteDTO;
 import com.styloChic.ecommerce.exceptions.ElementPanierException;
 import com.styloChic.ecommerce.exceptions.UtilisateurException;
 import com.styloChic.ecommerce.models.ElementPanier;
@@ -10,7 +11,7 @@ public interface ElementPanierService {
 
     public ElementPanier creerElementPanier(ElementPanier elementPanier);
 
-    public ElementPanier modifierElementPanier(Long utilisateurId,Long id,ElementPanier elementPanier) throws ElementPanierException, UtilisateurException;
+    public ElementPanier modifierElementPanier(Long utilisateurId, Long id, QuantiteDTO quantiteDTO) throws ElementPanierException, UtilisateurException;
 
     public ElementPanier elementPanierExisteDeja(Panier panier, Produit produit, String taille, Long utilisateurId);
 

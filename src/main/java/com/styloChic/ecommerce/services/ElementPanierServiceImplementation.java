@@ -1,6 +1,7 @@
 package com.styloChic.ecommerce.services;
 
 
+import com.styloChic.ecommerce.dtos.QuantiteDTO;
 import com.styloChic.ecommerce.exceptions.ElementPanierException;
 import com.styloChic.ecommerce.exceptions.UtilisateurException;
 import com.styloChic.ecommerce.models.ElementPanier;
@@ -24,32 +25,103 @@ public class ElementPanierServiceImplementation implements ElementPanierService{
     private UtilisateurService utilisateurService;
 
     @Autowired
-    private PanierRepository panierRepository;
+    PanierRepository panierRepository;
+
+
 
     @Override
     public ElementPanier creerElementPanier(ElementPanier elementPanier) {
-        elementPanier.setQuantite(1);
+        elementPanier.setQuantite(elementPanier.getQuantite());
         elementPanier.setTotalHt(elementPanier.getProduit().getPrixVenteHT() * elementPanier.getQuantite());
         elementPanier.setTotalTTC(elementPanier.getProduit().getPrixVenteTTC() * elementPanier.getQuantite());
+        elementPanier.setTotalTTCReduit(elementPanier.getProduit().getPrixVenteTTCReduit() * elementPanier.getQuantite());
         elementPanier.setTva(elementPanier.getTva());
 
         ElementPanier elementPanierCree = elementPanierRepository.save(elementPanier);
         return elementPanierCree;
     }
 
-    @Override
-    public ElementPanier modifierElementPanier(Long utilisateurId, Long id, ElementPanier elementPanier) throws ElementPanierException, UtilisateurException {
 
+    @Override
+    public ElementPanier modifierElementPanier(Long utilisateurId, Long id, QuantiteDTO quantiteDTO) throws ElementPanierException, UtilisateurException {
         ElementPanier element = chercherElementPanierParId(id);
         Utilisateur utilisateur = utilisateurService.chercherUtilisateurParIdParticulier(element.getUtilisateurId());
-
-        if (utilisateur.getId().equals(utilisateurId)) {
-            element.setQuantite(elementPanier.getQuantite());
-            element.setTotalTTC(element.getQuantite() * element.getProduit().getPrixVenteTTC());
-            element.setTotalHt(element.getQuantite() * element.getProduit().getPrixVenteHT());
+        Panier panier = panierRepository.chercherPanierParUtilisateurId(utilisateurId);
+        if (!utilisateur.getId().equals(utilisateurId)) {
+            throw new ElementPanierException("Ce n'est pas votre panier !");
         }
+
+        Produit produit = element.getProduit();
+        int quantiteMiseAjour = element.getQuantite();
+        double totalHT = 0.0;
+        double totalTTC = 0.0;
+        double totalTTCReduit = 0.0;
+
+        if (quantiteDTO.getOperation().equals("Incrementer")) {
+            quantiteMiseAjour = element.getQuantite() + 1;
+            element.setQuantite(quantiteMiseAjour);
+        }
+        else if (quantiteDTO.getOperation().equals("Decrementer")) {
+            quantiteMiseAjour = element.getQuantite() - 1;
+
+            if (quantiteMiseAjour <= 0) {
+                supprimerElementPanier(utilisateurId, id);
+                return null;
+            }
+            element.setQuantite(quantiteMiseAjour);
+        } else {
+            throw new ElementPanierException("Opération invalide !");
+        }
+
+        totalHT = produit.getPrixVenteHT() * quantiteMiseAjour;
+        totalTTC = produit.getPrixVenteTTC() * quantiteMiseAjour;
+        totalTTCReduit = produit.getPrixVenteTTCReduit() * quantiteMiseAjour;
+
+        element.setTotalHt(totalHT);
+        element.setTotalTTC(totalTTC);
+        element.setTotalTTCReduit(totalTTCReduit);
+        element.setTva(produit.getTva());
+
+        mettreAJourPanier(panier);
         return elementPanierRepository.save(element);
     }
+
+    private void mettreAJourPanier(Panier panier) {
+        double totalTTC = 0;
+        double totalTTCReduit = 0;
+        double totalHT = 0;
+        int totalElements = 0;
+        double totalTVA = 0;
+        double totalQuantite = 0;
+
+        for (ElementPanier elementPanier : panier.getElementsPanier()) {
+            totalTTC += elementPanier.getTotalTTC();
+            totalTTCReduit += elementPanier.getTotalTTCReduit();
+            totalHT += elementPanier.getTotalHt();
+            totalElements += elementPanier.getQuantite();
+            totalTVA += elementPanier.getTva() * elementPanier.getQuantite();
+            totalQuantite += elementPanier.getQuantite();
+        }
+
+        panier.setPrixTotalHt(totalHT);
+        panier.setPrixTotalTTC(totalTTC);
+        panier.setPrixTotalTTCReduit(totalTTCReduit);
+        panier.setTotalElement(totalElements);
+        panier.setMontantBase(totalTTCReduit);
+        panier.setMontantReduit(totalTTCReduit);
+        panier.setPourcentageReduction(0.00);
+        if (totalQuantite > 0) {
+            double moyenneTVA = totalTVA / totalQuantite;
+            panier.setTva(moyenneTVA);
+        } else {
+            panier.setTva(0.0);
+        }
+        panierRepository.save(panier);
+    }
+
+
+
+
 
     @Override
     public ElementPanier elementPanierExisteDeja(Panier panier, Produit produit, String taille, Long utilisateurId) {
@@ -58,15 +130,16 @@ public class ElementPanierServiceImplementation implements ElementPanierService{
     }
 
     @Override
-    public void supprimerElementPanier(Long utilisateurId, Long elementPnaierId) throws ElementPanierException, UtilisateurException {
-        ElementPanier elementPanier = chercherElementPanierParId(elementPnaierId);
+    public void supprimerElementPanier(Long utilisateurId, Long elementPanierId) throws ElementPanierException, UtilisateurException {
+        ElementPanier elementPanier = chercherElementPanierParId(elementPanierId);
         Utilisateur utilisateur = utilisateurService.chercherUtilisateurParIdParticulier(elementPanier.getUtilisateurId());
         Utilisateur utilisateurRequete = utilisateurService.chercherUtilisateurParIdParticulier(utilisateurId);
-
+        Panier panier = panierRepository.chercherPanierParUtilisateurId(utilisateurId);
         if(utilisateur.getId().equals(utilisateurRequete.getId())){
-            elementPanierRepository.deleteById(elementPnaierId);
+            elementPanierRepository.deleteById(elementPanierId);
+            mettreAJourPanier(panier);
         }else{
-            throw new UtilisateurException("Ce n'est pas votre panier !");
+            throw new ElementPanierException("Ce n'est pas votre panier !");
         }
     }
 

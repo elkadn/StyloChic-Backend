@@ -1,6 +1,8 @@
 package com.styloChic.ecommerce.controllers;
 
 
+import com.styloChic.ecommerce.exceptions.CodeReductionException;
+import com.styloChic.ecommerce.exceptions.ElementPanierException;
 import com.styloChic.ecommerce.exceptions.ProduitException;
 import com.styloChic.ecommerce.exceptions.UtilisateurException;
 import com.styloChic.ecommerce.models.Panier;
@@ -36,15 +38,40 @@ public class PanierController {
     }
 
     @PutMapping("/ajouter")
-    public ResponseEntity<ApiResponse>addItemToCart(@RequestBody AjouterElementPanierRequest requete, @RequestHeader("Authorization") String jwt)
-            throws UtilisateurException, ProduitException {
+    public ResponseEntity<ApiResponse>ajouterElementAuPanier(@RequestBody AjouterElementPanierRequest requete, @RequestHeader("Authorization") String jwt)
+            throws UtilisateurException, ProduitException, ElementPanierException {
         Utilisateur utilisateur = utilisateurService.chercherProfileUtilisateurParJwt(jwt);
         panierService.ajouterElementPanier(utilisateur.getId(),requete);
 
         ApiResponse reponse = new ApiResponse();
-        reponse.setMessage("Produti ajouté au panier");
+        reponse.setMessage("Produit ajouté au panier");
         reponse.setStatus(true);
 
         return new ResponseEntity<>(reponse,HttpStatus.OK);
+    }
+
+    @DeleteMapping("/vider")
+    public ResponseEntity<ApiResponse> viderPanier(@RequestHeader("Authorization") String jwt) throws UtilisateurException {
+        Utilisateur utilisateur = utilisateurService.chercherProfileUtilisateurParJwt(jwt);
+        panierService.viderPanier(utilisateur.getId());
+
+        ApiResponse reponse = new ApiResponse();
+        reponse.setMessage("Panier vidé avec succès !");
+        reponse.setStatus(true);
+
+        return new ResponseEntity<>(reponse, HttpStatus.OK);
+    }
+
+    @PutMapping("/codeReduction")
+    public ResponseEntity<ApiResponse> appliquerCodePromo(@RequestParam String codePromo, @RequestHeader("Authorization") String jwt)
+            throws UtilisateurException, CodeReductionException {
+
+        Utilisateur utilisateur = utilisateurService.chercherProfileUtilisateurParJwt(jwt);
+        String message = panierService.appliquerCodePromo(utilisateur.getId(), codePromo);
+        ApiResponse reponse = new ApiResponse();
+        reponse.setMessage(message);
+        reponse.setStatus(true);
+
+        return new ResponseEntity<>(reponse, HttpStatus.OK);
     }
 }

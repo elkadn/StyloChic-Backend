@@ -1,5 +1,6 @@
 package com.styloChic.ecommerce.controllers;
 
+import com.styloChic.ecommerce.dtos.QuantiteDTO;
 import com.styloChic.ecommerce.exceptions.ElementPanierException;
 import com.styloChic.ecommerce.exceptions.UtilisateurException;
 import com.styloChic.ecommerce.models.ElementPanier;
@@ -13,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/styloChic/elemmentPanier")
+@RequestMapping("/styloChic/elementPanier")
 public class ElementPanierController {
 
     @Autowired
@@ -39,10 +40,10 @@ public class ElementPanierController {
     }
 
     @PutMapping("/{elementPanierId}")
-    public ResponseEntity<ElementPanier> modifierElementPanier(@RequestBody ElementPanier elementPanier, @PathVariable Long cartItemId, @RequestHeader("Authorization") String jwt)
+    public ResponseEntity<ElementPanier> modifierElementPanier(@RequestBody QuantiteDTO quantiteDTO, @PathVariable Long elementPanierId, @RequestHeader("Authorization") String jwt)
             throws UtilisateurException,ElementPanierException{
         Utilisateur utilisateur = utilisateurService.chercherProfileUtilisateurParJwt(jwt);
-        ElementPanier elementPanierModifie = elementPanierService.modifierElementPanier(utilisateur.getId(),cartItemId,elementPanier);
+        ElementPanier elementPanierModifie = elementPanierService.modifierElementPanier(utilisateur.getId(),elementPanierId,quantiteDTO);
 
         return new ResponseEntity<>(elementPanierModifie,HttpStatus.OK);
     }

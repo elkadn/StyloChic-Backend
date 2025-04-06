@@ -72,9 +72,16 @@ public class ProduitServiceImplementation implements ProduitService{
         produit.setPrixAchat(requete.getPrixAchat());
         produit.setPrixVenteHT(requete.getPrixVenteHT());
         produit.setTva(requete.getTva());
+
         double tvaDecimal = requete.getTva() / 100.0;
-        produit.setPrixVenteTTC(requete.getPrixVenteHT() * (1 + tvaDecimal));
-        produit.setTailles(requete.getTailles());
+        double prixTTC = requete.getPrixVenteHT() * (1 + tvaDecimal);
+        produit.setPrixVenteTTC(prixTTC);
+
+        produit.setPourcentageRduction(requete.getPourcentageReduction());
+        double pourcentageReductionDecimal = requete.getPourcentageReduction() / 100.0;
+        double prixTTCReduit = prixTTC * (1 - pourcentageReductionDecimal);
+        produit.setPrixVenteTTCReduit(prixTTCReduit);
+
         produit.setCategorie(categorie);
         produit.setQuantiteEnStock(quantiteTotale);
         produit.setConseilEntretien(requete.getConseilEntretien());
@@ -113,7 +120,14 @@ public class ProduitServiceImplementation implements ProduitService{
         produitExistant.setPrixVenteHT(requete.getPrixVenteHT());
         produitExistant.setTva(requete.getTva());
         double tvaDecimal = requete.getTva() / 100.0;
-        produitExistant.setPrixVenteTTC(requete.getPrixVenteHT() * (1 + tvaDecimal));
+        double prixTTC = requete.getPrixVenteHT() * (1 + tvaDecimal);
+        produitExistant.setPrixVenteTTC(prixTTC);
+
+        produitExistant.setPourcentageRduction(requete.getPourcentageReduction());
+        double pourcentageReductionDecimal = requete.getPourcentageReduction() / 100.0;
+        double prixTTCReduit = prixTTC * (1 - pourcentageReductionDecimal);
+        produitExistant.setPrixVenteTTCReduit(prixTTCReduit);
+
         produitExistant.setTailles(requete.getTailles());
         produitExistant.setCategorie(categorie);
         produitExistant.setQuantiteEnStock(quantiteTotale);
@@ -143,6 +157,8 @@ public class ProduitServiceImplementation implements ProduitService{
                 p.getTva(),
                 p.getPrixVenteHT(),
                 p.getPrixVenteTTC(),
+                p.getPrixVenteTTCReduit(),
+                p.getPourcentageRduction(),
                 p.getCategorie().getCategorieParente().getCategorieParente().getNom(),
                 p.getCategorie().getCategorieParente().getNom(),
                 p.getCategorie().getNom(),
@@ -178,6 +194,8 @@ public class ProduitServiceImplementation implements ProduitService{
                 p.getTva(),
                 p.getPrixVenteHT(),
                 p.getPrixVenteTTC(),
+                p.getPrixVenteTTCReduit(),
+                p.getPourcentageRduction(),
                 p.getCategorie().getCategorieParente().getCategorieParente().getNom(),
                 p.getCategorie().getCategorieParente().getNom(),
                 p.getCategorie().getNom(),
@@ -266,6 +284,8 @@ public class ProduitServiceImplementation implements ProduitService{
                         p.getTva(),
                         p.getPrixVenteHT(),
                         p.getPrixVenteTTC(),
+                        p.getPrixVenteTTCReduit(),
+                        p.getPourcentageRduction(),
                         p.getCategorie().getCategorieParente().getCategorieParente().getNom(),
                         p.getCategorie().getCategorieParente().getNom(),
                         p.getCategorie().getNom(),
@@ -308,6 +328,8 @@ public class ProduitServiceImplementation implements ProduitService{
                        p.getTva(),
                        p.getPrixVenteHT(),
                        p.getPrixVenteTTC(),
+                       p.getPrixVenteTTCReduit(),
+                       p.getPourcentageRduction(),
                        p.getCategorie().getCategorieParente().getCategorieParente().getNom(),
                        p.getCategorie().getCategorieParente().getNom(),
                        p.getCategorie().getNom(),
