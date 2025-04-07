@@ -1,12 +1,10 @@
 package com.styloChic.ecommerce.services;
 
 import com.styloChic.ecommerce.config.JwtProvider;
+import com.styloChic.ecommerce.exceptions.FournisseurException;
 import com.styloChic.ecommerce.exceptions.ProduitException;
 import com.styloChic.ecommerce.models.*;
-import com.styloChic.ecommerce.repositories.CategorieRepository;
-import com.styloChic.ecommerce.repositories.CouleurRepository;
-import com.styloChic.ecommerce.repositories.ProduitRepository;
-import com.styloChic.ecommerce.repositories.UtilisateurRepository;
+import com.styloChic.ecommerce.repositories.*;
 import com.styloChic.ecommerce.requests.CreationProduitRequest;
 import com.styloChic.ecommerce.responses.ImageProduitAdminResponse;
 import com.styloChic.ecommerce.responses.ImageProduitClientResponse;
@@ -38,6 +36,9 @@ public class ProduitServiceImplementation implements ProduitService{
     private CategorieRepository categorieRepository;
 
     @Autowired
+    private FournisseurRepository fournisseurRepository;
+
+    @Autowired
     private CouleurRepository couleurRepository;
 
     @Autowired
@@ -52,7 +53,7 @@ public class ProduitServiceImplementation implements ProduitService{
         return admin;
     }
     @Override
-    public Produit creerProduit(CreationProduitRequest requete,String jwt) throws ProduitException{
+    public Produit creerProduit(CreationProduitRequest requete,String jwt) throws ProduitException,FournisseurException{
         Utilisateur admin = verifierAdmin(jwt);
 
         Couleur couleur = couleurRepository.findById(requete.getCouleurId())
@@ -60,6 +61,9 @@ public class ProduitServiceImplementation implements ProduitService{
 
         Categorie categorie = categorieRepository.findById(requete.getCategorieId())
                 .orElseThrow(() -> new ProduitException("La catégorie spécifiée est introuvable !"));
+
+        Fournisseur fournisseur = fournisseurRepository.findById(requete.getFournisseurId())
+                .orElseThrow(() -> new FournisseurException("Le fournisseur est inexistant !"));
 
         int quantiteTotale = requete.getTailles().stream()
                 .mapToInt(Taille::getQuantiteEnStock)
@@ -83,6 +87,7 @@ public class ProduitServiceImplementation implements ProduitService{
         produit.setPrixVenteTTCReduit(prixTTCReduit);
 
         produit.setCategorie(categorie);
+        produit.setFournisseur(fournisseur);
         produit.setQuantiteEnStock(quantiteTotale);
         produit.setConseilEntretien(requete.getConseilEntretien());
         produit.setSaison(requete.getSaison());
@@ -98,7 +103,7 @@ public class ProduitServiceImplementation implements ProduitService{
     }
 
     @Override
-    public Produit miseAjourProduit(Long idProduit, CreationProduitRequest requete,String jwt) throws ProduitException {
+    public Produit miseAjourProduit(Long idProduit, CreationProduitRequest requete,String jwt) throws ProduitException,FournisseurException {
         Utilisateur admin = verifierAdmin(jwt);
         Produit produitExistant = produitRepository.findById(idProduit)
                 .orElseThrow(() -> new ProduitException("Produit avec ID " + idProduit + " non trouvé"));
@@ -108,6 +113,9 @@ public class ProduitServiceImplementation implements ProduitService{
 
         Categorie categorie = categorieRepository.findById(requete.getCategorieId())
                 .orElseThrow(() -> new ProduitException("La catégorie spécifiée est introuvable !"));
+
+        Fournisseur fournisseur = fournisseurRepository.findById(requete.getFournisseurId())
+                .orElseThrow(() -> new FournisseurException("Le fournisseur est inexistant !"));
 
         int quantiteTotale = requete.getTailles().stream()
                 .mapToInt(Taille::getQuantiteEnStock)
@@ -130,6 +138,7 @@ public class ProduitServiceImplementation implements ProduitService{
 
         produitExistant.setTailles(requete.getTailles());
         produitExistant.setCategorie(categorie);
+        produitExistant.setFournisseur(fournisseur);
         produitExistant.setQuantiteEnStock(quantiteTotale);
         produitExistant.setConseilEntretien(requete.getConseilEntretien());
         produitExistant.setSaison(requete.getSaison());
@@ -213,7 +222,8 @@ public class ProduitServiceImplementation implements ProduitService{
                 (p.getAdmin().getNom() +" "+ p.getAdmin().getPrenom()),
                 p.getDateCreation(),
                 p.getDateModification(),
-                p.getPrixAchat()
+                p.getPrixAchat(),
+                p.getFournisseur().getId()
         );
 
         return produitAdminResponse;
@@ -303,7 +313,6 @@ public class ProduitServiceImplementation implements ProduitService{
                 ))
                 .collect(Collectors.toList());
 
-        // Création de la page avec les réponses mappées
         return new PageImpl<>(produitDTOs, paginable, produits.size());
     }
 

@@ -1,5 +1,6 @@
 package com.styloChic.ecommerce.services;
 
+import com.styloChic.ecommerce.exceptions.FournisseurException;
 import com.styloChic.ecommerce.exceptions.ProduitException;
 import com.styloChic.ecommerce.models.ImageProduit;
 import com.styloChic.ecommerce.models.Produit;
@@ -13,7 +14,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface ProduitService {
-    public Produit creerProduit(CreationProduitRequest requete,String jwt) throws ProduitException;
+    public Produit creerProduit(CreationProduitRequest requete,String jwt) throws ProduitException, FournisseurException;
 
     public ProduitClientResponse chercherProduitParIdPourClient(Long id) throws ProduitException;
 
@@ -42,7 +43,7 @@ public interface ProduitService {
 
     public ImageProduitAdminResponse avoirImageProduitAvecIdPourAdmin(Long idProduit, Long imageId, String jwt) throws ProduitException;
 
-    public Produit miseAjourProduit(Long idProduit, CreationProduitRequest requete,String jwt) throws ProduitException;
+    public Produit miseAjourProduit(Long idProduit, CreationProduitRequest requete,String jwt) throws ProduitException,FournisseurException;
 
     public Produit chercherProduit(Long id) throws ProduitException;
 }

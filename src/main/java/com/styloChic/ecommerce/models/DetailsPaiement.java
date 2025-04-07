@@ -1,96 +1,77 @@
 package com.styloChic.ecommerce.models;
 
 public class DetailsPaiement {
-    private MethodePaiement methodePaiement;
-    private String statusPaiement;
-    private String idPaiement;
-    private String idPaypalPaiement;
-    private String idPaypalPayeur;
-    private String stripePaiementIntentId;
+    private String paymentMethod;
+    private String status;
+    private String paymentId;
+
+
+    private String paypalPaymentId;
+    private String paypalPayerId;
+
+
+    private String stripePaymentIntentId;
     private String stripeClientSecret;
-    private double montantPaye;
-    private double fraisTransaction;
-    private String paypalEmail;
-    private String paypalAdresse;
-
-    public void setStripeDetails(String intentId, String clientSecret, double amount) {
-        this.methodePaiement = MethodePaiement.STRIPE;
-        this.stripePaiementIntentId = intentId;
-        this.stripeClientSecret = clientSecret;
-        this.montantPaye = amount;
-    }
-
-    public void setPaypalDetails(String paypalId, String payerId, double amount, String email) {
-        this.methodePaiement = MethodePaiement.PAYPAL;
-        this.idPaypalPaiement = paypalId;
-        this.idPaypalPayeur = payerId;
-        this.montantPaye = amount;
-        this.paypalEmail = email;
-    }
 
     public DetailsPaiement() {
     }
 
-    public DetailsPaiement(MethodePaiement methodePaiement, String statusPaiement, String idPaiement, String idPaypalPaiement, String idPaypalPayeur, String stripePaiementIntentId, String stripeClientSecret, double montantPaye, double fraisTransaction, String paypalEmail, String paypalAdresse) {
-        this.methodePaiement = methodePaiement;
-        this.statusPaiement = statusPaiement;
-        this.idPaiement = idPaiement;
-        this.idPaypalPaiement = idPaypalPaiement;
-        this.idPaypalPayeur = idPaypalPayeur;
-        this.stripePaiementIntentId = stripePaiementIntentId;
+    public DetailsPaiement(String paymentMethod, String status, String paymentId, String paypalPaymentId, String paypalPayerId, String stripePaymentIntentId, String stripeClientSecret) {
+        this.paymentMethod = paymentMethod;
+        this.status = status;
+        this.paymentId = paymentId;
+        this.paypalPaymentId = paypalPaymentId;
+        this.paypalPayerId = paypalPayerId;
+        this.stripePaymentIntentId = stripePaymentIntentId;
         this.stripeClientSecret = stripeClientSecret;
-        this.montantPaye = montantPaye;
-        this.fraisTransaction = fraisTransaction;
-        this.paypalEmail = paypalEmail;
-        this.paypalAdresse = paypalAdresse;
     }
 
-    public MethodePaiement getMethodePaiement() {
-        return methodePaiement;
+    public String getPaymentMethod() {
+        return paymentMethod;
     }
 
-    public void setMethodePaiement(MethodePaiement methodePaiement) {
-        this.methodePaiement = methodePaiement;
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
     }
 
-    public String getStatusPaiement() {
-        return statusPaiement;
+    public String getStatus() {
+        return status;
     }
 
-    public void setStatusPaiement(String statusPaiement) {
-        this.statusPaiement = statusPaiement;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
-    public String getIdPaiement() {
-        return idPaiement;
+    public String getPaymentId() {
+        return paymentId;
     }
 
-    public void setIdPaiement(String idPaiement) {
-        this.idPaiement = idPaiement;
+    public void setPaymentId(String paymentId) {
+        this.paymentId = paymentId;
     }
 
-    public String getIdPaypalPaiement() {
-        return idPaypalPaiement;
+    public String getPaypalPaymentId() {
+        return paypalPaymentId;
     }
 
-    public void setIdPaypalPaiement(String idPaypalPaiement) {
-        this.idPaypalPaiement = idPaypalPaiement;
+    public void setPaypalPaymentId(String paypalPaymentId) {
+        this.paypalPaymentId = paypalPaymentId;
     }
 
-    public String getIdPaypalPayeur() {
-        return idPaypalPayeur;
+    public String getPaypalPayerId() {
+        return paypalPayerId;
     }
 
-    public void setIdPaypalPayeur(String idPaypalPayeur) {
-        this.idPaypalPayeur = idPaypalPayeur;
+    public void setPaypalPayerId(String paypalPayerId) {
+        this.paypalPayerId = paypalPayerId;
     }
 
-    public String getStripePaiementIntentId() {
-        return stripePaiementIntentId;
+    public String getStripePaymentIntentId() {
+        return stripePaymentIntentId;
     }
 
-    public void setStripePaiementIntentId(String stripePaiementIntentId) {
-        this.stripePaiementIntentId = stripePaiementIntentId;
+    public void setStripePaymentIntentId(String stripePaymentIntentId) {
+        this.stripePaymentIntentId = stripePaymentIntentId;
     }
 
     public String getStripeClientSecret() {
@@ -99,37 +80,5 @@ public class DetailsPaiement {
 
     public void setStripeClientSecret(String stripeClientSecret) {
         this.stripeClientSecret = stripeClientSecret;
-    }
-
-    public double getMontantPaye() {
-        return montantPaye;
-    }
-
-    public void setMontantPaye(double montantPaye) {
-        this.montantPaye = montantPaye;
-    }
-
-    public double getFraisTransaction() {
-        return fraisTransaction;
-    }
-
-    public void setFraisTransaction(double fraisTransaction) {
-        this.fraisTransaction = fraisTransaction;
-    }
-
-    public String getPaypalEmail() {
-        return paypalEmail;
-    }
-
-    public void setPaypalEmail(String paypalEmail) {
-        this.paypalEmail = paypalEmail;
-    }
-
-    public String getPaypalAdresse() {
-        return paypalAdresse;
-    }
-
-    public void setPaypalAdresse(String paypalAdresse) {
-        this.paypalAdresse = paypalAdresse;
     }
 }

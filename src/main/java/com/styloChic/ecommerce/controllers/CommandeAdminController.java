@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/styloChic/commandes/admi,")
+@RequestMapping("/styloChic/commandes/admin")
 public class CommandeAdminController {
 
     @Autowired
@@ -25,7 +25,7 @@ public class CommandeAdminController {
         return new ResponseEntity<List<CommandeDTO>>(commandeDTOS, HttpStatus.ACCEPTED);
     }
 
-    @PutMapping("/{idCommande}/confirmee")
+    @PutMapping("/{idCommande}/confirmer")
     public ResponseEntity<CommandeDTO> commandeConfirmee(@PathVariable Long idCommande, @RequestHeader("Authorization") String jwt)
             throws CommandeException {
         CommandeDTO commandeDTO = commandeService.commandeConfirmee(idCommande,jwt);
@@ -33,7 +33,7 @@ public class CommandeAdminController {
         return new ResponseEntity<>(commandeDTO, HttpStatus.OK);
     }
 
-    @PutMapping("/{idCommande}/expediee")
+    @PutMapping("/{idCommande}/expedier")
     public ResponseEntity<CommandeDTO> commandeExpedie(@PathVariable Long idCommande, @RequestHeader("Authorization") String jwt)
             throws CommandeException {
         CommandeDTO commandeDTO = commandeService.commandeExpediee(idCommande,jwt);
@@ -41,7 +41,7 @@ public class CommandeAdminController {
         return new ResponseEntity<>(commandeDTO,HttpStatus.OK);
     }
 
-    @PutMapping("/{idCommande}/livree")
+    @PutMapping("/{idCommande}/livrer")
     public ResponseEntity<CommandeDTO> DeliverOrderHandler(@PathVariable Long idCommande, @RequestHeader("Authorization") String jwt)
             throws CommandeException {
         CommandeDTO commandeDTO = commandeService.commandeLivree(idCommande,jwt);
@@ -49,7 +49,7 @@ public class CommandeAdminController {
         return new ResponseEntity<>(commandeDTO,HttpStatus.OK);
     }
 
-    @PutMapping("/{idCommande}/annulee")
+    @PutMapping("/{idCommande}/annuler")
     public ResponseEntity<CommandeDTO> CancelOrderHandler(@PathVariable Long idCommande, @RequestHeader("Authorization") String jwt)
             throws CommandeException {
         CommandeDTO commandeDTO = commandeService.commandeAnnulee(idCommande,jwt);

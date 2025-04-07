@@ -1,6 +1,7 @@
 package com.styloChic.ecommerce.controllers;
 
 
+import com.styloChic.ecommerce.exceptions.FournisseurException;
 import com.styloChic.ecommerce.exceptions.ProduitException;
 import com.styloChic.ecommerce.models.Produit;
 import com.styloChic.ecommerce.requests.CreationProduitRequest;
@@ -30,7 +31,7 @@ public class ProduitAdminController {
     }
     @PostMapping("/ajouter")
     public Produit ajouterProduit(@RequestBody CreationProduitRequest creationProduitRequest,
-                                  @RequestHeader("Authorization") String jwt) throws ProduitException {
+                                  @RequestHeader("Authorization") String jwt) throws ProduitException, FournisseurException {
         return produitService.creerProduit(creationProduitRequest, jwt);
     }
 
@@ -51,7 +52,7 @@ public class ProduitAdminController {
     @PutMapping("/{id}/modifier")
     public ResponseEntity<Produit> modifierProduit(@PathVariable Long id,
                                                    @RequestBody CreationProduitRequest creationProduitRequest,
-                                                   @RequestHeader("Authorization") String jwt) throws ProduitException {
+                                                   @RequestHeader("Authorization") String jwt) throws ProduitException,FournisseurException {
         Produit produitMisAJour = produitService.miseAjourProduit(id, creationProduitRequest,jwt);
         return new ResponseEntity<>(produitMisAJour, HttpStatus.OK);
     }

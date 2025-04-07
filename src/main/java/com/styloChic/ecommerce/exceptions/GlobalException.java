@@ -45,6 +45,23 @@ public class GlobalException {
         return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(FournisseurException.class)
+    public ResponseEntity<Object> FournisseurException(FournisseurException ex) {
+        if (ex.getMessage().contains("Accès interdit")) {
+            return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.FORBIDDEN);
+        }
+
+        if (ex.getMessage().contains("non trouvé")) {
+            return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.NOT_FOUND);
+        }
+
+        if (ex.getMessage().contains("existe déjà") || ex.getMessage().contains("Impossible de supprimer ce fournisseur")) {
+            return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.CONFLICT);
+        }
+
+        return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler(CouleurException.class)
     public ResponseEntity<Object> CouleurException(CouleurException ex) {
         if (ex.getMessage().contains("Accès interdit") || ex.getMessage().contains("pas autorisé")) {

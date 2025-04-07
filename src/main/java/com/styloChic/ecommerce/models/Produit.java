@@ -51,6 +51,10 @@ public class Produit {
     @JoinColumn(name = "categorie_id")
     private Categorie categorie;
 
+    @ManyToOne()
+    @JoinColumn(name = "fournisseur_id")
+    private Fournisseur fournisseur;
+
     @ManyToOne
     @JoinColumn(name = "couleur_id")
     private Couleur couleur;
@@ -84,10 +88,13 @@ public class Produit {
 
     @Column(name = "total_avis")
     private int total_avis;
+
+    @OneToMany(mappedBy = "produit", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OffreSpeciale> offresSpeciales = new ArrayList<>();
     public Produit() {
     }
 
-    public Produit(Long id, String titre, String description, double prixAchat, double tva, double prixVenteHT, double prixVenteTTC,double prixVenteTTCReduit,double pourcentageRduction, int quantiteEnStock, String imagePrincipale, String saison, String conseilEntretien, Categorie categorie, Couleur couleur, Utilisateur admin, Set<Taille> tailles, List<ImageProduit> imagesProduit, LocalDateTime dateCreation, LocalDateTime dateModification, List<Vote> votes, List<Avis> avis, int total_votes, int total_avis) {
+    public Produit(Long id, String titre, String description, double prixAchat, double tva, double prixVenteHT, double prixVenteTTC,double prixVenteTTCReduit,double pourcentageRduction, int quantiteEnStock, String imagePrincipale, String saison, String conseilEntretien, Categorie categorie,Fournisseur fournisseur, Couleur couleur, Utilisateur admin, Set<Taille> tailles, List<ImageProduit> imagesProduit, LocalDateTime dateCreation, LocalDateTime dateModification, List<Vote> votes, List<Avis> avis, int total_votes, int total_avis, List<OffreSpeciale> offresSpeciales) {
         this.id = id;
         this.titre = titre;
         this.description = description;
@@ -102,6 +109,7 @@ public class Produit {
         this.saison = saison;
         this.conseilEntretien = conseilEntretien;
         this.categorie = categorie;
+        this.fournisseur = fournisseur;
         this.couleur = couleur;
         this.admin = admin;
         this.tailles = tailles;
@@ -112,6 +120,7 @@ public class Produit {
         this.avis = avis;
         this.total_votes = total_votes;
         this.total_avis = total_avis;
+        this.offresSpeciales = offresSpeciales;
     }
 
     public Long getId() {
@@ -304,6 +313,22 @@ public class Produit {
 
     public void setPourcentageRduction(double pourcentageRduction) {
         this.pourcentageRduction = pourcentageRduction;
+    }
+
+    public Fournisseur getFournisseur() {
+        return fournisseur;
+    }
+
+    public void setFournisseur(Fournisseur fournisseur) {
+        this.fournisseur = fournisseur;
+    }
+
+    public List<OffreSpeciale> getOffresSpeciales() {
+        return offresSpeciales;
+    }
+
+    public void setOffresSpeciales(List<OffreSpeciale> offresSpeciales) {
+        this.offresSpeciales = offresSpeciales;
     }
 }
 

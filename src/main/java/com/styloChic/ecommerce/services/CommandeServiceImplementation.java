@@ -190,7 +190,7 @@ public class CommandeServiceImplementation implements CommandeService{
     public CommandeDTO commandePlacee(Long commandeId,String jwt) throws CommandeException {
         Commande commande = chercherCommandeParIdParticuliere(commandeId);
         commande.setStatutCommande("PLACÉE");
-        //order.getPaymentDetails().setStatus("COMPLETED");
+        commande.getDetailsPaiement().setStatus("Complété");
         CommandeDTO commandeDTO = new CommandeDTO();
         commandeDTO.setId(commande.getId());
         commandeDTO.setTotalHT(commande.getTotalHT());

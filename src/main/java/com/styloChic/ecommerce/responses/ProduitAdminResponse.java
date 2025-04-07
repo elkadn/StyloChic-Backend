@@ -15,16 +15,18 @@ public class ProduitAdminResponse extends BaseProduitResponse{
     private LocalDateTime dateAjout;
     private LocalDateTime dateModification;
     private double prixAchat;
+    private Long fournisseurId;
 
     public ProduitAdminResponse() {
     }
 
-    public ProduitAdminResponse(Long id, String titre, String description, double tva, double prixVenteHT, double prixVenteTTC,double prixVenteTTCReduit,double pourcentageReduction, String categorieParente, String categorieMoyenne, String categorieBase, int quantiteEnStock, String imagePrincipale, String saison, String conseilEntretien, String nomCouleur, Set<Taille> tailles, List<ImageProduit> imagesProduit, List<Vote> votes, List<Avis> avis, int total_votes, int total_avis, String admin, LocalDateTime dateAjout, LocalDateTime dateModification, double prixAchat) {
+    public ProduitAdminResponse(Long id, String titre, String description, double tva, double prixVenteHT, double prixVenteTTC,double prixVenteTTCReduit,double pourcentageReduction, String categorieParente, String categorieMoyenne, String categorieBase, int quantiteEnStock, String imagePrincipale, String saison, String conseilEntretien, String nomCouleur, Set<Taille> tailles, List<ImageProduit> imagesProduit, List<Vote> votes, List<Avis> avis, int total_votes, int total_avis, String admin, LocalDateTime dateAjout, LocalDateTime dateModification, double prixAchat,Long fournisseurId) {
         super(id,titre,description,tva,prixVenteHT,prixVenteTTC,prixVenteTTCReduit,pourcentageReduction,categorieParente,categorieMoyenne,categorieBase,quantiteEnStock,imagePrincipale,saison,conseilEntretien,nomCouleur,tailles,imagesProduit,votes,avis,total_votes,total_avis);
         this.admin = admin;
         this.dateAjout = dateAjout;
         this.dateModification = dateModification;
         this.prixAchat = prixAchat;
+        this.fournisseurId = fournisseurId;
     }
 
 
@@ -61,4 +63,11 @@ public class ProduitAdminResponse extends BaseProduitResponse{
         this.prixAchat = prixAchat;
     }
 
+    public Long getFournisseurId() {
+        return fournisseurId;
+    }
+
+    public void setFournisseurId(Long fournisseurId) {
+        this.fournisseurId = fournisseurId;
+    }
 }
