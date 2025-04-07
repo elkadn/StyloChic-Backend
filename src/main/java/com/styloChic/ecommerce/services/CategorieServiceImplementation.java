@@ -3,10 +3,8 @@ package com.styloChic.ecommerce.services;
 import com.styloChic.ecommerce.config.JwtProvider;
 import com.styloChic.ecommerce.dtos.CategorieDTO;
 import com.styloChic.ecommerce.exceptions.CategorieException;
-import com.styloChic.ecommerce.models.Categorie;
-import com.styloChic.ecommerce.models.Utilisateur;
-import com.styloChic.ecommerce.repositories.CategorieRepository;
-import com.styloChic.ecommerce.repositories.UtilisateurRepository;
+import com.styloChic.ecommerce.models.*;
+import com.styloChic.ecommerce.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -24,11 +22,21 @@ public class CategorieServiceImplementation implements CategorieService{
     @Autowired
     private JwtProvider jwtProvider;
 
+    @Autowired
+    private NavBarCategorieRepository navBarCategorieRepository;
+
+    @Autowired
+    private NavBarSectionRepository navBarSectionRepository;
+
+    @Autowired
+    private NavBarElementRepository navBarElementRepository;
+
     @Override
     public List<Categorie> chercherTousCategories(String jwt) throws CategorieException {
         verifierAdmin(jwt);
         return categorieRepository.findAll();
     }
+
     @Override
     public Categorie ajouterCategorie(CategorieDTO categorieDTO, String jwt) throws CategorieException {
         Utilisateur admin = verifierAdmin(jwt);
@@ -53,13 +61,53 @@ public class CategorieServiceImplementation implements CategorieService{
         categorie.setAdmin(admin);
 
         if (categorieDTO.getCategorieParenteId() != null) {
-            Categorie categorieParente = categorieRepository.findById(categorieDTO.getCategorieParenteId())
-                    .orElseThrow(() -> new CategorieException("Catégorie parente introuvable !"));
-            categorie.setCategorieParente(categorieParente);
+            Categorie parent = categorieRepository.findById(categorieDTO.getCategorieParenteId())
+                    .orElseThrow(() -> new CategorieException("Catégorie parente non trouvée !"));
+            categorie.setCategorieParente(parent);
         }
 
-        return categorieRepository.save(categorie);
+        Categorie savedCategorie = categorieRepository.save(categorie);
+
+        switch (savedCategorie.getNiveau()) {
+            case 1 -> {
+                NavBarCategorie navBarCategorie = new NavBarCategorie();
+                navBarCategorie.setNom(savedCategorie.getNom());
+                navBarCategorie.setCategorie(savedCategorie);
+                navBarCategorieRepository.save(navBarCategorie);
+            }
+            case 2 -> {
+                Categorie parentCategorie = savedCategorie.getCategorieParente();
+                if (parentCategorie == null) throw new CategorieException("La catégorie de niveau 2 doit avoir une catégorie parente de niveau 1");
+
+                NavBarCategorie navBarCategorieParent = navBarCategorieRepository.findByNom(parentCategorie.getNom())
+                        .orElseThrow(() -> new CategorieException("NavBarCategorie parent non trouvé"));
+
+                NavBarSection navBarSection = new NavBarSection();
+                navBarSection.setNom(savedCategorie.getNom());
+                navBarSection.setNavBarCategorie(navBarCategorieParent);
+                navBarSection.setCategorie(savedCategorie);
+                navBarSectionRepository.save(navBarSection);
+            }
+            case 3 -> {
+                Categorie parentCategorie = savedCategorie.getCategorieParente();
+                if (parentCategorie == null) throw new CategorieException("La catégorie de niveau 3 doit avoir une catégorie parente de niveau 2");
+
+                NavBarSection navBarSectionParent = navBarSectionRepository.findByNom(parentCategorie.getNom())
+                        .orElseThrow(() -> new CategorieException("NavBarSection parent non trouvé"));
+
+                NavBarElement navBarElement = new NavBarElement();
+                navBarElement.setNom(savedCategorie.getNom());
+                navBarElement.setNavBarSection(navBarSectionParent);
+                navBarElement.setCategorie(savedCategorie);
+                navBarElement.setElementId(savedCategorie.getNom().toLowerCase().replace(" ", "_"));
+                navBarElementRepository.save(navBarElement);
+            }
+            default -> throw new CategorieException("Niveau de catégorie invalide !");
+        }
+
+        return savedCategorie;
     }
+
 
     public Categorie chercherCategorieParId(Long id, String jwt) throws CategorieException {
         verifierAdmin(jwt);
@@ -76,39 +124,72 @@ public class CategorieServiceImplementation implements CategorieService{
         return admin;
     }
 
+
     @Override
     public Categorie mettreAJourCategorie(Long id, CategorieDTO categorieDTO, String jwt) throws CategorieException {
         Utilisateur admin = verifierAdmin(jwt);
 
-        Categorie categorieExistante = categorieRepository.findById(id)
-                .orElseThrow(() -> new CategorieException("Catégorie non trouvée avec l'id : " + id));
+        Categorie categorie = categorieRepository.findById(id)
+                .orElseThrow(() -> new CategorieException("Catégorie non trouvée avec l'ID : " + id));
 
-        for (Categorie existe : categorieRepository.findAll()) {
-            boolean memeNom = existe.getNom().equalsIgnoreCase(categorieDTO.getNom());
-            boolean memeParent = (existe.getCategorieParente() == null && categorieDTO.getCategorieParenteId() == null) ||
-                    (existe.getCategorieParente() != null &&
-                            existe.getCategorieParente().getId().equals(categorieDTO.getCategorieParenteId()));
-
-            if (memeNom && memeParent && !existe.getId().equals(id)) {
-                throw new CategorieException("Une catégorie avec ce nom et cette catégorie parente existe déjà !");
+        List<Categorie> categoriesExistantes = categorieRepository.findAll();
+        for (Categorie c : categoriesExistantes) {
+            if (!c.getId().equals(id)) {
+                boolean memeNom = c.getNom().equalsIgnoreCase(categorieDTO.getNom());
+                boolean memeParent = (c.getCategorieParente() == null && categorieDTO.getCategorieParenteId() == null)
+                        || (c.getCategorieParente() != null
+                        && c.getCategorieParente().getId().equals(categorieDTO.getCategorieParenteId()));
+                if (memeNom && memeParent) {
+                    throw new CategorieException("Une autre catégorie existe déjà avec le même nom et parent !");
+                }
             }
         }
 
-        categorieExistante.setNom(categorieDTO.getNom());
-        categorieExistante.setNiveau(categorieDTO.getNiveau());
-        categorieExistante.setDateModification(LocalDateTime.now());
-        categorieExistante.setAdmin(admin);
+        categorie.setNom(categorieDTO.getNom());
+        categorie.setNiveau(categorieDTO.getNiveau());
+        categorie.setDateModification(LocalDateTime.now());
+        categorie.setAdmin(admin);
 
         if (categorieDTO.getCategorieParenteId() != null) {
             Categorie parent = categorieRepository.findById(categorieDTO.getCategorieParenteId())
-                    .orElseThrow(() -> new CategorieException("Catégorie parente introuvable !"));
-            categorieExistante.setCategorieParente(parent);
+                    .orElseThrow(() -> new CategorieException("Catégorie parente non trouvée !"));
+            categorie.setCategorieParente(parent);
         } else {
-            categorieExistante.setCategorieParente(null);
+            categorie.setCategorieParente(null);
         }
 
-        return categorieRepository.save(categorieExistante);
+        Categorie savedCategorie = categorieRepository.save(categorie);
+
+        switch (savedCategorie.getNiveau()) {
+            case 1 -> {
+                NavBarCategorie navBarCategorie = navBarCategorieRepository.findByCategorie(savedCategorie);
+                if (navBarCategorie != null) {
+                    navBarCategorie.setNom(savedCategorie.getNom());
+                    navBarCategorieRepository.save(navBarCategorie);
+                }
+            }
+            case 2 -> {
+                NavBarSection navBarSection = navBarSectionRepository.findByCategorie(savedCategorie);
+                if (navBarSection != null) {
+                    navBarSection.setNom(savedCategorie.getNom());
+                    navBarSectionRepository.save(navBarSection);
+                }
+            }
+            case 3 -> {
+                NavBarElement navBarElement = navBarElementRepository.findByCategorie(savedCategorie);
+                if (navBarElement != null) {
+                    navBarElement.setNom(savedCategorie.getNom());
+                    navBarElement.setElementId(savedCategorie.getNom().toLowerCase().replace(" ", "_"));
+                    navBarElementRepository.save(navBarElement);
+                }
+            }
+            default -> throw new CategorieException("Niveau de catégorie invalide !");
+        }
+
+        return savedCategorie;
     }
+
+
 
 
     @Override

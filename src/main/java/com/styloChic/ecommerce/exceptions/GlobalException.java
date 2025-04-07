@@ -34,11 +34,11 @@ public class GlobalException {
             return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.FORBIDDEN);
         }
 
-        if (ex.getMessage().contains("Catégorie parente introuvable") || ex.getMessage().contains("Catégorie non trouvée avec ID")) {
+        if (ex.getMessage().contains("Catégorie parente introuvable") || ex.getMessage().contains("non trouvée") || ex.getMessage().contains("Aucune")) {
             return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.NOT_FOUND);
         }
 
-        if (ex.getMessage().contains("Catégorie déjà existante") || ex.getMessage().contains("Impossible de supprimer cette catégorie")) {
+        if (ex.getMessage().contains("déjà existante") || ex.getMessage().contains("doit avoir") || ex.getMessage().contains("Impossible") || ex.getMessage().contains("invalide")) {
             return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.CONFLICT);
         }
 
@@ -137,6 +137,32 @@ public class GlobalException {
             return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.NOT_FOUND);
         }
 
+
+        return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(OffreSpecialeException.class)
+    public ResponseEntity<Object> OffreSpecialeException(OffreSpecialeException ex) {
+        if (ex.getMessage().contains("Accès interdit")) {
+            return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.FORBIDDEN);
+        }
+
+        if (ex.getMessage().contains("non trouvé")) {
+            return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(PubiliciteException.class)
+    public ResponseEntity<Object> PubiliciteException(PubiliciteException ex) {
+        if (ex.getMessage().contains("Accès interdit")) {
+            return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.FORBIDDEN);
+        }
+
+        if (ex.getMessage().contains("introuvable")) {
+            return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.NOT_FOUND);
+        }
 
         return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }

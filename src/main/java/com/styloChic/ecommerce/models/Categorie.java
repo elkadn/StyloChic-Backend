@@ -32,6 +32,8 @@ public class Categorie {
     @JoinColumn(name = "admin_id")
     private Utilisateur admin;
 
+
+
     public Categorie() {
     }
 
@@ -100,4 +102,6 @@ public class Categorie {
     public void setAdmin(Utilisateur admin) {
         this.admin = admin;
     }
+
+
 }
