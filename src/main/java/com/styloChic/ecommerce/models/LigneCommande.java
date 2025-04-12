@@ -1,5 +1,6 @@
 package com.styloChic.ecommerce.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity

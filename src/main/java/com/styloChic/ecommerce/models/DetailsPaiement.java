@@ -1,9 +1,9 @@
 package com.styloChic.ecommerce.models;
 
 public class DetailsPaiement {
-    private String paymentMethod;
-    private String status;
-    private String paymentId;
+
+    private String methodePaiement;
+    private String statusPaiement;
 
 
     private String paypalPaymentId;
@@ -16,39 +16,31 @@ public class DetailsPaiement {
     public DetailsPaiement() {
     }
 
-    public DetailsPaiement(String paymentMethod, String status, String paymentId, String paypalPaymentId, String paypalPayerId, String stripePaymentIntentId, String stripeClientSecret) {
-        this.paymentMethod = paymentMethod;
-        this.status = status;
-        this.paymentId = paymentId;
+    public DetailsPaiement(String methodePaiement, String statusPaiement, String paypalPaymentId, String paypalPayerId, String stripePaymentIntentId, String stripeClientSecret) {
+        this.methodePaiement = methodePaiement;
+        this.statusPaiement = statusPaiement;
         this.paypalPaymentId = paypalPaymentId;
         this.paypalPayerId = paypalPayerId;
         this.stripePaymentIntentId = stripePaymentIntentId;
         this.stripeClientSecret = stripeClientSecret;
     }
 
-    public String getPaymentMethod() {
-        return paymentMethod;
+    public String getMethodePaiement() {
+        return methodePaiement;
     }
 
-    public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
+    public void setMethodePaiement(String methodePaiement) {
+        this.methodePaiement = methodePaiement;
     }
 
-    public String getStatus() {
-        return status;
+    public String getStatusPaiement() {
+        return statusPaiement;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setStatusPaiement(String statusPaiement) {
+        this.statusPaiement = statusPaiement;
     }
 
-    public String getPaymentId() {
-        return paymentId;
-    }
-
-    public void setPaymentId(String paymentId) {
-        this.paymentId = paymentId;
-    }
 
     public String getPaypalPaymentId() {
         return paypalPaymentId;

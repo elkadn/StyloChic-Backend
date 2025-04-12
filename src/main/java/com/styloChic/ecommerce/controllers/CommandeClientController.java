@@ -4,6 +4,7 @@ import com.styloChic.ecommerce.dtos.CommandeDTO;
 import com.styloChic.ecommerce.exceptions.CommandeException;
 import com.styloChic.ecommerce.exceptions.UtilisateurException;
 import com.styloChic.ecommerce.models.AdresseCommande;
+import com.styloChic.ecommerce.models.Commande;
 import com.styloChic.ecommerce.models.Utilisateur;
 import com.styloChic.ecommerce.services.CommandeService;
 import com.styloChic.ecommerce.services.UtilisateurService;
@@ -49,6 +50,14 @@ public class CommandeClientController {
 
         return new ResponseEntity<>(commandeDTO,HttpStatus.CREATED);
     }
+
+    @PutMapping("/{id}/paiementCash")
+    public ResponseEntity<CommandeDTO> modifierPaiementEnCash(@PathVariable Long id) throws CommandeException {
+        Commande commande = commandeService.modifierCommandeavecPaiementEnCash(id);
+        return ResponseEntity.ok(new CommandeDTO(commande));
+    }
+
+
 
 
 }

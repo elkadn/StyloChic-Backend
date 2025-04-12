@@ -35,7 +35,7 @@ public class VoteAdminController {
 
 
     @GetMapping("/produit/{idProduit}/utilisateur")
-    public ResponseEntity<Vote> getUserRatingForProduct(@PathVariable Long idProduit,
+    public ResponseEntity<Vote> avoirVoteUtilisateurSurProduit(@PathVariable Long idProduit,
                                                           @RequestHeader("Authorization") String jwt)
             throws UtilisateurException, ProduitException {
 

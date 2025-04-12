@@ -2,6 +2,7 @@ package com.styloChic.ecommerce.models;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -33,7 +34,7 @@ public class Produit {
     private double prixVenteTTCReduit;
 
     @Column(name = "pourcentage_reduction")
-    private double pourcentageRduction;
+    private double pourcentageReduction;
 
 
     @Column(name = "quantite_en_stock")
@@ -94,7 +95,7 @@ public class Produit {
     public Produit() {
     }
 
-    public Produit(Long id, String titre, String description, double prixAchat, double tva, double prixVenteHT, double prixVenteTTC,double prixVenteTTCReduit,double pourcentageRduction, int quantiteEnStock, String imagePrincipale, String saison, String conseilEntretien, Categorie categorie,Fournisseur fournisseur, Couleur couleur, Utilisateur admin, Set<Taille> tailles, List<ImageProduit> imagesProduit, LocalDateTime dateCreation, LocalDateTime dateModification, List<Vote> votes, List<Avis> avis, int total_votes, int total_avis, List<OffreSpeciale> offresSpeciales) {
+    public Produit(Long id, String titre, String description, double prixAchat, double tva, double prixVenteHT, double prixVenteTTC,double prixVenteTTCReduit,double pourcentageReduction, int quantiteEnStock, String imagePrincipale, String saison, String conseilEntretien, Categorie categorie,Fournisseur fournisseur, Couleur couleur, Utilisateur admin, Set<Taille> tailles, List<ImageProduit> imagesProduit, LocalDateTime dateCreation, LocalDateTime dateModification, List<Vote> votes, List<Avis> avis, int total_votes, int total_avis, List<OffreSpeciale> offresSpeciales) {
         this.id = id;
         this.titre = titre;
         this.description = description;
@@ -103,7 +104,7 @@ public class Produit {
         this.prixVenteHT = prixVenteHT;
         this.prixVenteTTC = prixVenteTTC;
         this.prixVenteTTCReduit = prixVenteTTCReduit;
-        this.pourcentageRduction = pourcentageRduction;
+        this.pourcentageReduction = pourcentageReduction;
         this.quantiteEnStock = quantiteEnStock;
         this.imagePrincipale = imagePrincipale;
         this.saison = saison;
@@ -307,12 +308,12 @@ public class Produit {
         this.prixVenteTTCReduit = prixVenteTTCReduit;
     }
 
-    public double getPourcentageRduction() {
-        return pourcentageRduction;
+    public double getPourcentageReduction() {
+        return pourcentageReduction;
     }
 
-    public void setPourcentageRduction(double pourcentageRduction) {
-        this.pourcentageRduction = pourcentageRduction;
+    public void setPourcentageReduction(double pourcentageReduction) {
+        this.pourcentageReduction = pourcentageReduction;
     }
 
     public Fournisseur getFournisseur() {

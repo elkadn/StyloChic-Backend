@@ -2,6 +2,7 @@ package com.styloChic.ecommerce.services;
 
 import com.styloChic.ecommerce.config.JwtProvider;
 import com.styloChic.ecommerce.dtos.CommandeDTO;
+import com.styloChic.ecommerce.dtos.LigneCommandeDTO;
 import com.styloChic.ecommerce.exceptions.CommandeException;
 import com.styloChic.ecommerce.exceptions.UtilisateurException;
 import com.styloChic.ecommerce.models.*;
@@ -152,6 +153,47 @@ public class CommandeServiceImplementation implements CommandeService{
                 commandeDTO.setTotalElements(commande.getTotalElements());
                 commandeDTO.setAdresseLivrasion(commande.getAdresseLivrasion());
 
+
+                List<LigneCommandeDTO> lignesCommandeDTO = commande.getLigneCommande().stream().map(ligneCommande -> {
+                    Long idProduit = ligneCommande.getProduit().getId();
+                    String imageProduit = ligneCommande.getProduit().getImagePrincipale();
+                    String couleurProduit = ligneCommande.getProduit().getCouleur().getNom();
+                    Double prixProduitHT = ligneCommande.getProduit().getPrixVenteHT();
+                    Double tvaProduit = ligneCommande.getProduit().getTva();
+                    Double prixProduitTTC = ligneCommande.getProduit().getPrixVenteTTC();
+                    Double prixProduitReduit = ligneCommande.getProduit().getPrixVenteTTCReduit();
+                    Double pourcentageReductionProduit = ligneCommande.getProduit().getPourcentageReduction();
+                    String saisonProduit = ligneCommande.getProduit().getSaison();
+                    String titreProduit = ligneCommande.getProduit().getTitre();
+                    String descriptionProduit = ligneCommande.getProduit().getDescription();
+                    String conseilEntretienProduit = ligneCommande.getProduit().getConseilEntretien();
+
+
+                    return new LigneCommandeDTO(
+                            ligneCommande.getId(),
+                            ligneCommande.getTaille(),
+                            ligneCommande.getQuantite(),
+                            ligneCommande.getPrixHT(),
+                            ligneCommande.getPrixTTC(),
+                            ligneCommande.getTva(),
+                            ligneCommande.getPrixTTCReduit(),
+                            idProduit,
+                            imageProduit,
+                            couleurProduit,
+                            prixProduitHT,
+                            tvaProduit,
+                            prixProduitTTC,
+                            prixProduitReduit,
+                            saisonProduit,
+                            pourcentageReductionProduit,
+                            titreProduit,
+                            descriptionProduit,
+                            conseilEntretienProduit
+                    );
+                }).collect(Collectors.toList());
+
+                commandeDTO.setLigneCommandeDTOS(lignesCommandeDTO);
+
                 return commandeDTO;
             } else {
                 throw new CommandeException("Ce n'est pas votre commande !");
@@ -190,7 +232,7 @@ public class CommandeServiceImplementation implements CommandeService{
     public CommandeDTO commandePlacee(Long commandeId,String jwt) throws CommandeException {
         Commande commande = chercherCommandeParIdParticuliere(commandeId);
         commande.setStatutCommande("PLACÉE");
-        commande.getDetailsPaiement().setStatus("Complété");
+        commande.getDetailsPaiement().setStatusPaiement("Complété");
         CommandeDTO commandeDTO = new CommandeDTO();
         commandeDTO.setId(commande.getId());
         commandeDTO.setTotalHT(commande.getTotalHT());
@@ -373,4 +415,27 @@ public class CommandeServiceImplementation implements CommandeService{
         }
         return admin;
     }
+
+
+
+
+    @Override
+    public Commande modifierCommandeavecPaiementEnCash(Long commandeId) throws CommandeException{
+        Commande commande = commandeRepository.findById(commandeId)
+                .orElseThrow(() -> new CommandeException("Commande non trouvée avec l'id : " + commandeId));
+
+
+        commande.setStatutCommande("en_preparation");
+
+        DetailsPaiement detailsPaiement = commande.getDetailsPaiement();
+        if (detailsPaiement == null) {
+            detailsPaiement = new DetailsPaiement();
+            commande.setDetailsPaiement(detailsPaiement);
+        }
+        detailsPaiement.setMethodePaiement("Cash");
+        detailsPaiement.setStatusPaiement("En attente de paiement");
+        return commandeRepository.save(commande);
+    }
+
+
 }

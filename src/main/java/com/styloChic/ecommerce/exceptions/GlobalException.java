@@ -12,7 +12,7 @@ public class GlobalException {
 
     @ExceptionHandler(UtilisateurException.class)
     public ResponseEntity<Object> UtilisateurException(UtilisateurException ex) {
-        if (ex.getMessage().contains("Accès interdit")) {
+        if (ex.getMessage().contains("Acc40ès interdit")) {
             return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.FORBIDDEN);
         }
 
@@ -115,7 +115,7 @@ public class GlobalException {
             return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.FORBIDDEN);
         }
 
-        if (ex.getMessage().contains("non trouvé")) {
+        if (ex.getMessage().contains("non trouvé") || ex.getMessage().contains("invalide")) {
             return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.NOT_FOUND);
         }
 

@@ -1,5 +1,6 @@
 package com.styloChic.ecommerce.repositories;
 
+import com.styloChic.ecommerce.dtos.TailleDTO;
 import com.styloChic.ecommerce.models.Produit;
 import com.styloChic.ecommerce.responses.ProduitClientResponse;
 import org.springframework.data.domain.Page;
@@ -26,4 +27,7 @@ public interface ProduitRepository extends JpaRepository<Produit,Long> {
     Page<Produit> searchByTitreOrDescription(@Param("requete") String requete, Pageable pageable);
 
 
+
+    @Query(value = "SELECT DISTINCT tp.nom FROM tailles_produit tp", nativeQuery = true)
+    List<String> findDistinctTailleNomsNative();
 }

@@ -1,5 +1,6 @@
 package com.styloChic.ecommerce.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -24,6 +25,7 @@ public abstract class LigneTransaction {
     private Double prixTTC;
     private double tva;
 
+    @JsonIgnore
     private Long utilisateurId;
 
     public LigneTransaction(Long id, Produit produit, String taille, int quantite, Double prixHT, Double prixTTC, double tva, Long utilisateurId) {

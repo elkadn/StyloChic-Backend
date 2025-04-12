@@ -33,4 +33,7 @@ public interface CommandeService {
     public List<CommandeDTO> avoirToutesCommandes(String jwt) throws CommandeException;
 
     public void supprimerCommande(Long commandeId,String jwt) throws CommandeException;
+
+    Commande modifierCommandeavecPaiementEnCash(Long commandeId) throws CommandeException;
+
 }

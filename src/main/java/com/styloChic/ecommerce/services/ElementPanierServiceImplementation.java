@@ -108,6 +108,7 @@ public class ElementPanierServiceImplementation implements ElementPanierService{
         panier.setPrixTotalTTCReduit(totalTTCReduit);
         panier.setTotalElement(totalElements);
         panier.setMontantBase(totalTTCReduit);
+        panier.setCodeReduction(null);
         panier.setMontantReduit(totalTTCReduit);
         panier.setPourcentageReduction(0.00);
         if (totalQuantite > 0) {

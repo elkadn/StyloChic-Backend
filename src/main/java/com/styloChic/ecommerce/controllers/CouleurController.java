@@ -18,6 +18,8 @@ public class CouleurController {
     @Autowired
     private CouleurService couleurService;
 
+
+
     @GetMapping
     public List<Couleur> avoirToutesCouleurs(@RequestHeader("Authorization") String jwt) throws CouleurException {
         return couleurService.chercherToutesCouleurs(jwt);

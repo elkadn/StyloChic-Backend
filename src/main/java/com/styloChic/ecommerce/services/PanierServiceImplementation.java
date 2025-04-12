@@ -99,6 +99,7 @@ public class PanierServiceImplementation implements PanierService{
         panier.setPrixTotalTTC(totalTTC);
         panier.setPrixTotalTTCReduit(totalTTCReduit);
         panier.setTotalElement(totalElements);
+        panier.setCodeReduction(null);
         panier.setMontantBase(totalTTCReduit);
         panier.setMontantReduit(totalTTCReduit);
         panier.setPourcentageReduction(0.00);
@@ -124,6 +125,16 @@ public class PanierServiceImplementation implements PanierService{
 
 
         panier.getElementsPanier().clear();
+        panier.setCodeReduction(null);
+        panier.setTva(0.0);
+        panier.setMontantBase(0.0);
+        panier.setPrixTotalTTC(0.0);
+        panier.setPrixTotalHt(0.0);
+        panier.setTotalElement(0);
+        panier.setPrixTotalTTCReduit(0.0);
+        panier.setPourcentageReduction(0.0);
+        panier.setMontantReduit(0.0);
+
         panierRepository.save(panier);
     }
 
@@ -142,14 +153,14 @@ public class PanierServiceImplementation implements PanierService{
 
         Date dateActuelle = new Date();
         if (codeReduction.getDateDebut().after(dateActuelle)) {
-            throw new CodeReductionException("Ce code focntionne à partir du : "+codeReduction.getDateDebut());
+            throw new CodeReductionException("Ce code focntionne à partir du : "+codeReduction.getDateDebut()+" !");
         }
         if (codeReduction.getDateFin().before(dateActuelle)) {
-            throw new CodeReductionException("Le code promo a expiré !");
+            throw new CodeReductionException("La durée du code promo a expiré !");
         }
 
         if (panier.getPrixTotalTTC() < codeReduction.getConditionReduction()) {
-            throw new CodeReductionException("Le montnant total ne dépasse pas "+codeReduction.getConditionReduction());
+            throw new CodeReductionException("Le montant total ne dépasse pas "+codeReduction.getConditionReduction()+ "MAD !");
         }
 
         double reduction = (panier.getPrixTotalTTC() * codeReduction.getPourcentage()) / 100;

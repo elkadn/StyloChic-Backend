@@ -2,8 +2,10 @@ package com.styloChic.ecommerce.dtos;
 
 import com.styloChic.ecommerce.models.AdresseCommande;
 import com.styloChic.ecommerce.models.Commande;
+import com.styloChic.ecommerce.models.LigneCommande;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class CommandeDTO {
 
@@ -18,6 +20,7 @@ public class CommandeDTO {
     private LocalDateTime dateLivraison;
     private String statutCommande;
     private AdresseCommande adresseLivrasion;
+    private List<LigneCommandeDTO> ligneCommandeDTOS;
     private double prixTTCReduit;
     private double pourcentageReduction;
     private double montantBase;
@@ -43,7 +46,7 @@ public class CommandeDTO {
         this.montantBase = commande.getMontantBase();
         this.montantReduit = commande.getMontantReduit();
     }
-    public CommandeDTO(Long id, double totalHT, double totalTTC, double tva, int totalElements, LocalDateTime dateCreation, String numCommande, LocalDateTime dateCommande, LocalDateTime dateLivraison, String statutCommande, AdresseCommande adresseLivrasion, double prixTTCReduit, double pourcentageReduction, double montantBase, double montantReduit) {
+    public CommandeDTO(Long id, double totalHT, double totalTTC, double tva, int totalElements, LocalDateTime dateCreation, String numCommande, LocalDateTime dateCommande, LocalDateTime dateLivraison, String statutCommande, AdresseCommande adresseLivrasion, double prixTTCReduit, double pourcentageReduction, double montantBase, double montantReduit,List<LigneCommandeDTO> ligneCommandeDTOS) {
         this.id = id;
         this.totalHT = totalHT;
         this.totalTTC = totalTTC;
@@ -59,6 +62,7 @@ public class CommandeDTO {
         this.pourcentageReduction = pourcentageReduction;
         this.montantBase = montantBase;
         this.montantReduit = montantReduit;
+        this.ligneCommandeDTOS = ligneCommandeDTOS;
     }
 
     public Long getId() {
@@ -179,5 +183,13 @@ public class CommandeDTO {
 
     public void setMontantReduit(double montantReduit) {
         this.montantReduit = montantReduit;
+    }
+
+    public List<LigneCommandeDTO> getLigneCommandeDTOS() {
+        return ligneCommandeDTOS;
+    }
+
+    public void setLigneCommandeDTOS(List<LigneCommandeDTO> ligneCommandeDTOS) {
+        this.ligneCommandeDTOS = ligneCommandeDTOS;
     }
 }

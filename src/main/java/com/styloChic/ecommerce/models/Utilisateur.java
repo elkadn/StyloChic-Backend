@@ -16,7 +16,10 @@ public class Utilisateur {
     private Long id;
     private String prenom;
     private String nom;
+
     private String motDePasse;
+
+
     private String email;
     private String role;
     private String telephone;

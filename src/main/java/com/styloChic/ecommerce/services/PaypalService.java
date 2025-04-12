@@ -45,16 +45,16 @@ public class PaypalService {
         redirectUrls.setReturnUrl(successUrl);
         payment.setRedirectUrls(redirectUrls);
 
-        APIContext context = new APIContext(clientId, clientSecret, mode);
-        return payment.create(context);
+        APIContext apiContext = new APIContext(clientId, clientSecret, mode);
+        return payment.create(apiContext);
     }
 
     public Payment executePayment(String paymentId, String payerId) throws PayPalRESTException {
-        APIContext context = new APIContext(clientId, clientSecret, mode);
         Payment payment = new Payment();
         payment.setId(paymentId);
         PaymentExecution paymentExecute = new PaymentExecution();
         paymentExecute.setPayerId(payerId);
-        return payment.execute(context, paymentExecute);
+        APIContext apiContext = new APIContext(clientId, clientSecret, mode);
+        return payment.execute(apiContext, paymentExecute);
     }
 }
