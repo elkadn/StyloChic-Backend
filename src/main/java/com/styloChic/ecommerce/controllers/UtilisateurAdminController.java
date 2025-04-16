@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/styloChic/utilisateurs")
-public class UtilisateurController {
+public class UtilisateurAdminController {
 
     @Autowired
     private UtilisateurService utilisateurService;

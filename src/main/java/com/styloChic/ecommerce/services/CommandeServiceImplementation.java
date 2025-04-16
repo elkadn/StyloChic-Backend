@@ -4,6 +4,7 @@ import com.styloChic.ecommerce.config.JwtProvider;
 import com.styloChic.ecommerce.dtos.CommandeDTO;
 import com.styloChic.ecommerce.dtos.LigneCommandeDTO;
 import com.styloChic.ecommerce.exceptions.CommandeException;
+import com.styloChic.ecommerce.exceptions.CouleurException;
 import com.styloChic.ecommerce.exceptions.UtilisateurException;
 import com.styloChic.ecommerce.models.*;
 import com.styloChic.ecommerce.repositories.*;
@@ -42,8 +43,9 @@ public class CommandeServiceImplementation implements CommandeService{
     private UtilisateurService utilisateurService;
 
 
+
     @Override
-    public CommandeDTO creerCommande(Utilisateur utilisateur, AdresseCommande adresseCommande) {
+    public CommandeDTO creerCommande(Utilisateur utilisateur, AdresseCommande adresseCommande) throws UtilisateurException{
 
         adresseCommande.setUtilisateur(utilisateur);
         adresseCommande.setDateAjout(LocalDateTime.now());
@@ -85,7 +87,7 @@ public class CommandeServiceImplementation implements CommandeService{
         commandeCree.setTotalElements(panier.getTotalElement());
         commandeCree.setAdresseLivrasion(addresse);
         commandeCree.setDateCommande(LocalDateTime.now());
-        commandeCree.setStatutCommande("EN ATTENTE");
+        commandeCree.setStatutCommande("En attente");
         commandeCree.setDateCreation(LocalDateTime.now());
         String numCommande = generateUniqueCommandeNumber();
         commandeCree.setNumCommande(numCommande);
@@ -114,8 +116,6 @@ public class CommandeServiceImplementation implements CommandeService{
         commandeDTO.setTotalElements(commandeCree.getTotalElements());
         commandeDTO.setAdresseLivrasion(commandeCree.getAdresseLivrasion());
 
-
-
         return commandeDTO;
     }
 
@@ -136,6 +136,82 @@ public class CommandeServiceImplementation implements CommandeService{
             Commande commande = optionnel.get();
 
             if (utilisateurId.equals(commande.getUtilisateur().getId())) {
+                CommandeDTO commandeDTO = new CommandeDTO();
+                commandeDTO.setId(commande.getId());
+                commandeDTO.setTotalHT(commande.getTotalHT());
+                commandeDTO.setTotalTTC(commande.getTotalTTC());
+                commandeDTO.setMontantReduit(commande.getMontantReduit());
+                commandeDTO.setMontantBase(commande.getMontantBase());
+                commandeDTO.setPrixTTCReduit(commande.getPrixTTCReduit());
+                commandeDTO.setTva(commande.getTva());
+                commandeDTO.setStatutCommande(commande.getStatutCommande());
+                commandeDTO.setDateCommande(commande.getDateCommande());
+                commandeDTO.setDateLivraison(commande.getDateLivraison());
+                commandeDTO.setDateCreation(commande.getDateCreation());
+                commandeDTO.setPourcentageReduction(commande.getPourcentageReduction());
+                commandeDTO.setNumCommande(commande.getNumCommande());
+                commandeDTO.setTotalElements(commande.getTotalElements());
+                commandeDTO.setAdresseLivrasion(commande.getAdresseLivrasion());
+                commandeDTO.setMethodePaiement(commande.getDetailsPaiement().getMethodePaiement());
+
+
+                List<LigneCommandeDTO> lignesCommandeDTO = commande.getLigneCommande().stream().map(ligneCommande -> {
+                    Long idProduit = ligneCommande.getProduit().getId();
+                    String imageProduit = ligneCommande.getProduit().getImagePrincipale();
+                    String couleurProduit = ligneCommande.getProduit().getCouleur().getNom();
+                    Double prixProduitHT = ligneCommande.getProduit().getPrixVenteHT();
+                    Double tvaProduit = ligneCommande.getProduit().getTva();
+                    Double prixProduitTTC = ligneCommande.getProduit().getPrixVenteTTC();
+                    Double prixProduitReduit = ligneCommande.getProduit().getPrixVenteTTCReduit();
+                    Double pourcentageReductionProduit = ligneCommande.getProduit().getPourcentageReduction();
+                    String saisonProduit = ligneCommande.getProduit().getSaison();
+                    String titreProduit = ligneCommande.getProduit().getTitre();
+                    String descriptionProduit = ligneCommande.getProduit().getDescription();
+                    String conseilEntretienProduit = ligneCommande.getProduit().getConseilEntretien();
+
+
+                    return new LigneCommandeDTO(
+                            ligneCommande.getId(),
+                            ligneCommande.getTaille(),
+                            ligneCommande.getQuantite(),
+                            ligneCommande.getPrixHT(),
+                            ligneCommande.getPrixTTC(),
+                            ligneCommande.getTva(),
+                            ligneCommande.getPrixTTCReduit(),
+                            idProduit,
+                            imageProduit,
+                            couleurProduit,
+                            prixProduitHT,
+                            tvaProduit,
+                            prixProduitTTC,
+                            prixProduitReduit,
+                            saisonProduit,
+                            pourcentageReductionProduit,
+                            titreProduit,
+                            descriptionProduit,
+                            conseilEntretienProduit
+                    );
+                }).collect(Collectors.toList());
+
+                commandeDTO.setLigneCommandeDTOS(lignesCommandeDTO);
+
+                return commandeDTO;
+            } else {
+                throw new CommandeException("Ce n'est pas votre commande !");
+            }
+        }
+
+        throw new CommandeException("Commande non trouvée avec id : " + commandeId);
+    }
+
+
+    @Override
+    public CommandeDTO chercherCommandeParIdPourAdmin(Long commandeId,String jwt) throws CommandeException {
+        verifierAdmin(jwt);
+        Optional<Commande> optionnel = commandeRepository.findById(commandeId);
+
+        if (optionnel.isPresent()) {
+            Commande commande = optionnel.get();
                 CommandeDTO commandeDTO = new CommandeDTO();
                 commandeDTO.setId(commande.getId());
                 commandeDTO.setTotalHT(commande.getTotalHT());
@@ -195,10 +271,8 @@ public class CommandeServiceImplementation implements CommandeService{
                 commandeDTO.setLigneCommandeDTOS(lignesCommandeDTO);
 
                 return commandeDTO;
-            } else {
-                throw new CommandeException("Ce n'est pas votre commande !");
             }
-        }
+
 
         throw new CommandeException("Commande non trouvée avec id : " + commandeId);
     }
@@ -256,7 +330,7 @@ public class CommandeServiceImplementation implements CommandeService{
     @Override
     public CommandeDTO commandeConfirmee(Long commandeId,String jwt) throws CommandeException {
         Commande commande = chercherCommandeParIdParticuliere(commandeId);
-        commande.setStatutCommande("CONFIRMÉE");
+        commande.setStatutCommande("Confirmée");
 
         commandeRepository.save(commande);
 
@@ -284,7 +358,7 @@ public class CommandeServiceImplementation implements CommandeService{
     @Override
     public CommandeDTO commandeExpediee(Long commandeId,String jwt) throws CommandeException {
         Commande commande = chercherCommandeParIdParticuliere(commandeId);
-        commande.setStatutCommande("EXPÉDIÉE");
+        commande.setStatutCommande("Expédiée");
 
         for (LigneCommande ligneCommande : commande.getLigneCommande()) {
             Produit produit = ligneCommande.getProduit();
@@ -340,7 +414,7 @@ public class CommandeServiceImplementation implements CommandeService{
     public CommandeDTO commandeLivree(Long commandeId,String jwt) throws CommandeException {
         verifierAdmin(jwt);
         Commande commande = chercherCommandeParIdParticuliere(commandeId);
-        commande.setStatutCommande("LIVRÉE");
+        commande.setStatutCommande("Livrée");
         commandeRepository.save(commande);
 
         CommandeDTO commandeDTO = new CommandeDTO();
@@ -367,7 +441,7 @@ public class CommandeServiceImplementation implements CommandeService{
     public CommandeDTO commandeAnnulee(Long commandeId,String jwt) throws CommandeException {
         verifierAdmin(jwt);
         Commande commande = chercherCommandeParIdParticuliere(commandeId);
-        commande.setStatutCommande("ANNULÉE");
+        commande.setStatutCommande("Annulée");
         commandeRepository.save(commande);
 
         CommandeDTO commandeDTO = new CommandeDTO();
@@ -420,12 +494,12 @@ public class CommandeServiceImplementation implements CommandeService{
 
 
     @Override
-    public Commande modifierCommandeavecPaiementEnCash(Long commandeId) throws CommandeException{
+    public Commande modifierCommandeavecPaiementEnCash(Long commandeId) throws CommandeException,UtilisateurException{
         Commande commande = commandeRepository.findById(commandeId)
                 .orElseThrow(() -> new CommandeException("Commande non trouvée avec l'id : " + commandeId));
 
 
-        commande.setStatutCommande("en_preparation");
+        commande.setStatutCommande("En cours de préparation");
 
         DetailsPaiement detailsPaiement = commande.getDetailsPaiement();
         if (detailsPaiement == null) {
@@ -434,6 +508,8 @@ public class CommandeServiceImplementation implements CommandeService{
         }
         detailsPaiement.setMethodePaiement("Cash");
         detailsPaiement.setStatusPaiement("En attente de paiement");
+        panierService.viderPanier(commande.getUtilisateur().getId());
+
         return commandeRepository.save(commande);
     }
 

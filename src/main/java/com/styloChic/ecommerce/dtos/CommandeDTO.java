@@ -26,6 +26,8 @@ public class CommandeDTO {
     private double montantBase;
     private double montantReduit;
 
+    private String methodePaiement;
+
     public CommandeDTO() {
     }
 
@@ -63,6 +65,26 @@ public class CommandeDTO {
         this.montantBase = montantBase;
         this.montantReduit = montantReduit;
         this.ligneCommandeDTOS = ligneCommandeDTOS;
+    }
+
+    public CommandeDTO(Long id, double totalHT, double totalTTC, double tva, int totalElements, LocalDateTime dateCreation, String numCommande, LocalDateTime dateCommande, LocalDateTime dateLivraison, String statutCommande, AdresseCommande adresseLivrasion, List<LigneCommandeDTO> ligneCommandeDTOS, double prixTTCReduit, double pourcentageReduction, double montantBase, double montantReduit, String methodePaiement) {
+        this.id = id;
+        this.totalHT = totalHT;
+        this.totalTTC = totalTTC;
+        this.tva = tva;
+        this.totalElements = totalElements;
+        this.dateCreation = dateCreation;
+        this.numCommande = numCommande;
+        this.dateCommande = dateCommande;
+        this.dateLivraison = dateLivraison;
+        this.statutCommande = statutCommande;
+        this.adresseLivrasion = adresseLivrasion;
+        this.ligneCommandeDTOS = ligneCommandeDTOS;
+        this.prixTTCReduit = prixTTCReduit;
+        this.pourcentageReduction = pourcentageReduction;
+        this.montantBase = montantBase;
+        this.montantReduit = montantReduit;
+        this.methodePaiement = methodePaiement;
     }
 
     public Long getId() {
@@ -191,5 +213,13 @@ public class CommandeDTO {
 
     public void setLigneCommandeDTOS(List<LigneCommandeDTO> ligneCommandeDTOS) {
         this.ligneCommandeDTOS = ligneCommandeDTOS;
+    }
+
+    public String getMethodePaiement() {
+        return methodePaiement;
+    }
+
+    public void setMethodePaiement(String methodePaiement) {
+        this.methodePaiement = methodePaiement;
     }
 }

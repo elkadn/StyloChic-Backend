@@ -5,10 +5,8 @@ import com.styloChic.ecommerce.dtos.OffreSpecialeDTO;
 import com.styloChic.ecommerce.exceptions.CategorieException;
 import com.styloChic.ecommerce.exceptions.OffreSpecialeException;
 import com.styloChic.ecommerce.exceptions.ProduitException;
-import com.styloChic.ecommerce.models.OffreSpeciale;
 import com.styloChic.ecommerce.services.OffreSpecialeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -48,4 +46,20 @@ public class OffreSpecialeAdminController {
         offreSpecialeService.supprimerOffreSpeciale(id, jwt);
         return new ResponseEntity<>("Offre spéciale supprimée avec succès", HttpStatus.OK);
     }
+
+    @PutMapping("/visibilite/{id}")
+    public ResponseEntity<String> changerVisibiliteOffre(@PathVariable Long id,
+                                                        @RequestHeader("Authorization") String jwt,
+                                                        @RequestParam boolean visibilite) throws OffreSpecialeException {
+        offreSpecialeService.changerVisibiliteOffreSpeciale(id, jwt, visibilite);
+        return new ResponseEntity<>("Visibilté changé avec succès",HttpStatus.OK);
+
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<OffreSpecialeDTO> getOffreSpecialeParId(@PathVariable Long id, @RequestHeader("Authorization") String jwt) throws OffreSpecialeException{
+        OffreSpecialeDTO offre = offreSpecialeService.chercherOffreSpecialeParId(id, jwt);
+        return ResponseEntity.ok(offre);
+    }
+
 }

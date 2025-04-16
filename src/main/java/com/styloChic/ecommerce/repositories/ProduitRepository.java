@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ProduitRepository extends JpaRepository<Produit,Long> {
     @Query("SELECT p FROM Produit p " +
@@ -30,4 +31,6 @@ public interface ProduitRepository extends JpaRepository<Produit,Long> {
 
     @Query(value = "SELECT DISTINCT tp.nom FROM tailles_produit tp", nativeQuery = true)
     List<String> findDistinctTailleNomsNative();
+
+
 }

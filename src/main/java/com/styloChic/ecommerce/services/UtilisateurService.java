@@ -23,6 +23,9 @@ public interface UtilisateurService {
     public void supprimerUtilisateur(Long id,String jwt) throws UtilisateurException;
 
     public UtilisateurDTO mettreAJourUtilisateur(Long id, Utilisateur utilisateur, String jwt) throws UtilisateurException;
+
+    public void changerMotDePasse(Long utilisateurId, String nouveauMotDePasse, String jwt) throws UtilisateurException;
+
 }
 
 

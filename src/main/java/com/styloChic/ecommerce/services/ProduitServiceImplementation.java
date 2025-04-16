@@ -180,6 +180,7 @@ public class ProduitServiceImplementation implements ProduitService{
                 p.getImagesProduit(),
                 p.getVotes(),
                 p.getAvis(),
+                p.getInspirations(),
                 p.getVotes().size(),
                 p.getAvis().size()
         );
@@ -217,13 +218,16 @@ public class ProduitServiceImplementation implements ProduitService{
                 p.getImagesProduit(),
                 p.getVotes(),
                 p.getAvis(),
+                p.getInspirations(),
                 p.getVotes().size(),
                 p.getAvis().size(),
                 (p.getAdmin().getNom() +" "+ p.getAdmin().getPrenom()),
                 p.getDateCreation(),
                 p.getDateModification(),
                 p.getPrixAchat(),
-                p.getFournisseur().getId()
+                p.getFournisseur().getId(),
+                p.getCouleur().getId(),
+                p.getCategorie().getId()
         );
 
         return produitAdminResponse;
@@ -308,6 +312,7 @@ public class ProduitServiceImplementation implements ProduitService{
                         p.getImagesProduit(),
                         p.getVotes(),
                         p.getAvis(),
+                        p.getInspirations(),
                         p.getVotes().size(),
                         p.getAvis().size()
                 ))
@@ -351,6 +356,7 @@ public class ProduitServiceImplementation implements ProduitService{
                        p.getImagesProduit(),
                        p.getVotes(),
                        p.getAvis(),
+                       p.getInspirations(),
                        p.getVotes().size(),
                        p.getAvis().size()
                ))

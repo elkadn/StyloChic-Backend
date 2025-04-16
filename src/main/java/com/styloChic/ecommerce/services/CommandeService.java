@@ -11,10 +11,11 @@ import java.util.List;
 
 public interface CommandeService {
 
-    public CommandeDTO creerCommande(Utilisateur utilisateur, AdresseCommande adresseCommande);
+    public CommandeDTO creerCommande(Utilisateur utilisateur, AdresseCommande adresseCommande) throws UtilisateurException;
 
     public CommandeDTO chercherCommandeParId(Long commandeId,Long utilisateurId) throws CommandeException,UtilisateurException;
 
+    public CommandeDTO chercherCommandeParIdPourAdmin(Long commandeId,String jwt) throws CommandeException;
     public Commande chercherCommandeParIdParticuliere(Long commandeId) throws CommandeException;
 
 
@@ -34,6 +35,6 @@ public interface CommandeService {
 
     public void supprimerCommande(Long commandeId,String jwt) throws CommandeException;
 
-    Commande modifierCommandeavecPaiementEnCash(Long commandeId) throws CommandeException;
+    Commande modifierCommandeavecPaiementEnCash(Long commandeId) throws CommandeException,UtilisateurException;
 
 }

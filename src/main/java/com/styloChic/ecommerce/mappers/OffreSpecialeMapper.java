@@ -10,6 +10,7 @@ public class OffreSpecialeMapper {
 
     public static OffreSpecialeDTO toDTO(OffreSpeciale offre) {
         OffreSpecialeDTO dto = new OffreSpecialeDTO();
+        dto.setId(offre.getId());
         dto.setNom(offre.getNom());
         dto.setUrlImage(offre.getUrlImage());
         dto.setDescriptionImage(offre.getDescriptionImage());

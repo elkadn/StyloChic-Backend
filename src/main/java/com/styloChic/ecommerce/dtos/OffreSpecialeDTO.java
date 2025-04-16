@@ -3,6 +3,7 @@ package com.styloChic.ecommerce.dtos;
 
 public class OffreSpecialeDTO {
 
+    private Long id;
     private String nom;
     private String urlImage;
     private String descriptionImage;
@@ -15,7 +16,8 @@ public class OffreSpecialeDTO {
     public OffreSpecialeDTO() {
     }
 
-    public OffreSpecialeDTO(String nom, String urlImage, String descriptionImage, String lien, boolean visibilite, Long produitId,Long navBarCategorieId) {
+    public OffreSpecialeDTO(Long id,String nom, String urlImage, String descriptionImage, String lien, boolean visibilite, Long produitId,Long navBarCategorieId) {
+        this.id = id;
         this.nom = nom;
         this.urlImage = urlImage;
         this.descriptionImage = descriptionImage;
@@ -25,6 +27,14 @@ public class OffreSpecialeDTO {
         this.navBarCategorieId = navBarCategorieId;
     }
 
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getNom() {
         return nom;

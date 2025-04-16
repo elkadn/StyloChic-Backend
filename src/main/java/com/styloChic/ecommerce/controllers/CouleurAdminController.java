@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/styloChic/couleurs/admin")
-public class CouleurController {
+public class CouleurAdminController {
 
     @Autowired
     private CouleurService couleurService;

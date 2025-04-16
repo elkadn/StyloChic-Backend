@@ -14,6 +14,10 @@ public class NavBarCategorieDTO {
 
     public NavBarCategorieDTO() {}
 
+    public NavBarCategorieDTO(Long id,String nom){
+        this.id = id;
+        this.nom = nom;
+    }
     public NavBarCategorieDTO(Long id, String nom, List<OffreSpecialeDTO> offresSpeciales,List<SectionDTO> sections) {
         this.id = id;
         this.nom = nom;

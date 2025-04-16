@@ -6,10 +6,7 @@ import com.styloChic.ecommerce.exceptions.CategorieException;
 import com.styloChic.ecommerce.exceptions.OffreSpecialeException;
 import com.styloChic.ecommerce.exceptions.ProduitException;
 import com.styloChic.ecommerce.mappers.OffreSpecialeMapper;
-import com.styloChic.ecommerce.models.NavBarCategorie;
-import com.styloChic.ecommerce.models.OffreSpeciale;
-import com.styloChic.ecommerce.models.Produit;
-import com.styloChic.ecommerce.models.Utilisateur;
+import com.styloChic.ecommerce.models.*;
 import com.styloChic.ecommerce.repositories.OffreSpecialeRepository;
 import com.styloChic.ecommerce.repositories.UtilisateurRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +40,15 @@ public class OffreSpecialeServiceImplementation implements OffreSpecialeService{
         List<OffreSpeciale> offres = offreSpecialeRepository.findAll();
         return OffreSpecialeMapper.toDTOList(offres);
     }
+
+    @Override
+    public OffreSpecialeDTO chercherOffreSpecialeParId(Long id, String jwt) throws OffreSpecialeException {
+        verifierAdmin(jwt);
+        OffreSpeciale offre = offreSpecialeRepository.findById(id)
+                .orElseThrow(() -> new OffreSpecialeException("Offre spéciale non trouvée avec l'id : " + id));
+        return OffreSpecialeMapper.toDTO(offre);
+    }
+
 
 
     @Override
@@ -108,5 +114,14 @@ public class OffreSpecialeServiceImplementation implements OffreSpecialeService{
             throw new OffreSpecialeException("Accès interdit : vous devez être un administrateur !");
         }
         return admin;
+    }
+
+    public void changerVisibiliteOffreSpeciale(Long id, String jwt, boolean visibilite) throws OffreSpecialeException {
+        verifierAdmin(jwt);
+        OffreSpeciale offreSpeciale = offreSpecialeRepository.findById(id)
+                .orElseThrow(() -> new OffreSpecialeException("Offre non trouvée avec l'id : " + id));
+
+        offreSpeciale.setVisibilite(visibilite);
+        offreSpecialeRepository.save(offreSpeciale);
     }
 }

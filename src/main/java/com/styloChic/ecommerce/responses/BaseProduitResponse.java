@@ -1,9 +1,6 @@
 package com.styloChic.ecommerce.responses;
 
-import com.styloChic.ecommerce.models.Avis;
-import com.styloChic.ecommerce.models.ImageProduit;
-import com.styloChic.ecommerce.models.Taille;
-import com.styloChic.ecommerce.models.Vote;
+import com.styloChic.ecommerce.models.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -32,6 +29,8 @@ public class BaseProduitResponse {
     private List<ImageProduit> imagesProduit = new ArrayList<>();
     private List<Vote> votes = new ArrayList<>();
     private List<Avis> avis = new ArrayList<>();
+    private List<Inspiration> inspirations = new ArrayList<>();
+
     private int total_votes;
     private int total_avis;
 
@@ -39,7 +38,7 @@ public class BaseProduitResponse {
     public BaseProduitResponse() {
     }
 
-    public BaseProduitResponse(Long id, String titre, String description, double tva, double prixVenteHT, double prixVenteTTC, double prixVenteTTCReduit, double pourcentageReduction, String categorieParente, String categorieMoyenne, String categorieBase, int quantiteEnStock, String imagePrincipale, String saison, String conseilEntretien, String nomCouleur, Set<Taille> tailles, List<ImageProduit> imagesProduit, List<Vote> votes, List<Avis> avis, int total_votes, int total_avis) {
+    public BaseProduitResponse(Long id, String titre, String description, double tva, double prixVenteHT, double prixVenteTTC, double prixVenteTTCReduit, double pourcentageReduction, String categorieParente, String categorieMoyenne, String categorieBase, int quantiteEnStock, String imagePrincipale, String saison, String conseilEntretien, String nomCouleur, Set<Taille> tailles, List<ImageProduit> imagesProduit, List<Vote> votes, List<Avis> avis,List<Inspiration> inspirations, int total_votes, int total_avis) {
         this.id = id;
         this.titre = titre;
         this.description = description;
@@ -60,6 +59,7 @@ public class BaseProduitResponse {
         this.imagesProduit = imagesProduit;
         this.votes = votes;
         this.avis = avis;
+        this.inspirations = inspirations;
         this.total_votes = total_votes;
         this.total_avis = total_avis;
     }
@@ -222,6 +222,14 @@ public class BaseProduitResponse {
 
     public void setAvis(List<Avis> avis) {
         this.avis = avis;
+    }
+
+    public List<Inspiration> getInspirations() {
+        return inspirations;
+    }
+
+    public void setInspirations(List<Inspiration> inspirations) {
+        this.inspirations = inspirations;
     }
 
     public int getTotal_votes() {

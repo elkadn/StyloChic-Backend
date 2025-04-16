@@ -178,7 +178,9 @@ public class UtilisateurServiceImplementation implements UtilisateurService {
         utilisateurExistants.setPrenom(utilisateur.getPrenom());
         utilisateurExistants.setNom(utilisateur.getNom());
         utilisateurExistants.setEmail(utilisateur.getEmail());
-        utilisateurExistants.setMotDePasse(passwordEncoder.encode(utilisateur.getMotDePasse()));
+        if (utilisateur.getMotDePasse() != null && !utilisateur.getMotDePasse().trim().isEmpty()) {
+            utilisateurExistants.setMotDePasse(passwordEncoder.encode(utilisateur.getMotDePasse()));
+        }
         utilisateurExistants.setTelephone(utilisateur.getTelephone());
         utilisateurExistants.setDateModification(LocalDateTime.now());
         utilisateurExistants.setAdmin(admin);
@@ -197,6 +199,40 @@ public class UtilisateurServiceImplementation implements UtilisateurService {
         return utilisateurDTO;
     }
 
+    @Override
+    public void changerMotDePasse(Long utilisateurId, String nouveauMotDePasse, String jwt) throws UtilisateurException {
+        if (nouveauMotDePasse == null || nouveauMotDePasse.trim().isEmpty()) {
+            throw new UtilisateurException("Le nouveau mot de passe ne peut pas être vide !");
+        }
+
+        String emailDemandeur = jwtProvider.getEmailFromToken(jwt);
+        Utilisateur demandeur = utilisateurRepository.chercherParEmail(emailDemandeur);
+
+        if (demandeur == null) {
+            throw new UtilisateurException("Utilisateur connecté introuvable !");
+        }
+
+        Optional<Utilisateur> utilisateurOpt = utilisateurRepository.findById(utilisateurId);
+        if (utilisateurOpt.isEmpty()) {
+            throw new UtilisateurException("Utilisateur avec ID " + utilisateurId + " non trouvé !");
+        }
+
+        Utilisateur cible = utilisateurOpt.get();
+
+        if(!cible.getId().equals(demandeur.getId())) {
+            throw new UtilisateurException("Vous n'êtes pas autorisé à modifier ce mot de passe !");
+        }
+
+        if (nouveauMotDePasse.length() < 8) {
+            throw new UtilisateurException("Le mot de passe doit contenir au moins 8 caractères !");
+        }
+
+        String motDePasseEncode = passwordEncoder.encode(nouveauMotDePasse);
+        cible.setMotDePasse(motDePasseEncode);
+        cible.setDateModification(LocalDateTime.now());
+
+        utilisateurRepository.save(cible);
+    }
 
 
 }

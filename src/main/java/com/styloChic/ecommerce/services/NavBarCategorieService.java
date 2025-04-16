@@ -11,4 +11,6 @@ public interface NavBarCategorieService {
     public List<NavBarCategorieDTO> avoirTousNavBarCategories() throws CategorieException;
 
     public NavBarCategorie avoirNavBarCategorieParId(Long id) throws CategorieException;
+
+    public NavBarCategorieDTO avoirNavBarCategorieParIdParticulier(Long id) throws CategorieException;
 }

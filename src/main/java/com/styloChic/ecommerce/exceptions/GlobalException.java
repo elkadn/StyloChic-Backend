@@ -72,7 +72,7 @@ public class GlobalException {
             return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.NOT_FOUND);
         }
 
-        if (ex.getMessage().contains("Une autre couleur avec le nom") || ex.getMessage().contains("existe déjà")) {
+        if (ex.getMessage().contains("Une autre couleur avec le nom") || ex.getMessage().contains("Impossible") || ex.getMessage().contains("existe déjà")) {
             return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.CONFLICT);
         }
 

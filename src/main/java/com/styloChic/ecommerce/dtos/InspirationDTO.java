@@ -1,15 +1,9 @@
-package com.styloChic.ecommerce.models;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+package com.styloChic.ecommerce.dtos;
 
 import java.time.LocalDateTime;
 
-@Entity
-public class Inspiration {
+public class InspirationDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String image;
@@ -20,29 +14,21 @@ public class Inspiration {
 
     private boolean visibilite;
 
-    @ManyToOne
-    @JoinColumn(name = "produit_id")
-    @JsonIgnore
-    private Produit produit;
+    private String produitTitre;
 
+    private String nomUtilisateur;
 
-    @ManyToOne
-    @JoinColumn(name = "utilisateur_id")
-    @JsonIgnore
-    private Utilisateur utilisateur;
-
-
-    public Inspiration() {
+    public InspirationDTO() {
     }
 
-    public Inspiration(Long id, String image, String commentaire, LocalDateTime dateAjout, boolean visibilite, Produit produit,Utilisateur utilisateur) {
+    public InspirationDTO(Long id, String image, String commentaire, LocalDateTime dateAjout, boolean visibilite, String produitTitre,String nomUtilisateur) {
         this.id = id;
         this.image = image;
         this.commentaire = commentaire;
         this.dateAjout = dateAjout;
         this.visibilite = visibilite;
-        this.produit = produit;
-        this.utilisateur = utilisateur;
+        this.produitTitre = produitTitre;
+        this.nomUtilisateur = nomUtilisateur;
     }
 
     public Long getId() {
@@ -85,19 +71,19 @@ public class Inspiration {
         this.visibilite = visibilite;
     }
 
-    public Produit getProduit() {
-        return produit;
+    public String getProduitTitre() {
+        return produitTitre;
     }
 
-    public void setProduit(Produit produit) {
-        this.produit = produit;
+    public void setProduitTitre(String produitTitre) {
+        this.produitTitre = produitTitre;
     }
 
-    public Utilisateur getUtilisateur() {
-        return utilisateur;
+    public String getNomUtilisateur() {
+        return nomUtilisateur;
     }
 
-    public void setUtilisateur(Utilisateur utilisateur) {
-        this.utilisateur = utilisateur;
+    public void setNomUtilisateur(String nomUtilisateur) {
+        this.nomUtilisateur = nomUtilisateur;
     }
 }

@@ -84,6 +84,9 @@ public class Produit {
     @OneToMany(mappedBy = "produit",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Avis> avis = new ArrayList<>();
 
+    @OneToMany(mappedBy = "produit",cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<Inspiration> inspirations = new ArrayList<>();
+
     @Column(name = "total_votes")
     private int total_votes;
 
@@ -91,11 +94,12 @@ public class Produit {
     private int total_avis;
 
     @OneToMany(mappedBy = "produit", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<OffreSpeciale> offresSpeciales = new ArrayList<>();
     public Produit() {
     }
 
-    public Produit(Long id, String titre, String description, double prixAchat, double tva, double prixVenteHT, double prixVenteTTC,double prixVenteTTCReduit,double pourcentageReduction, int quantiteEnStock, String imagePrincipale, String saison, String conseilEntretien, Categorie categorie,Fournisseur fournisseur, Couleur couleur, Utilisateur admin, Set<Taille> tailles, List<ImageProduit> imagesProduit, LocalDateTime dateCreation, LocalDateTime dateModification, List<Vote> votes, List<Avis> avis, int total_votes, int total_avis, List<OffreSpeciale> offresSpeciales) {
+    public Produit(Long id, String titre, String description, double prixAchat, double tva, double prixVenteHT, double prixVenteTTC,double prixVenteTTCReduit,double pourcentageReduction, int quantiteEnStock, String imagePrincipale, String saison, String conseilEntretien, Categorie categorie,Fournisseur fournisseur, Couleur couleur, Utilisateur admin, Set<Taille> tailles, List<ImageProduit> imagesProduit, LocalDateTime dateCreation, LocalDateTime dateModification, List<Vote> votes, List<Avis> avis,List<Inspiration> inspirations, int total_votes, int total_avis, List<OffreSpeciale> offresSpeciales) {
         this.id = id;
         this.titre = titre;
         this.description = description;
@@ -119,6 +123,7 @@ public class Produit {
         this.dateModification = dateModification;
         this.votes = votes;
         this.avis = avis;
+        this.inspirations = inspirations;
         this.total_votes = total_votes;
         this.total_avis = total_avis;
         this.offresSpeciales = offresSpeciales;
@@ -282,6 +287,14 @@ public class Produit {
 
     public void setAvis(List<Avis> avis) {
         this.avis = avis;
+    }
+
+    public List<Inspiration> getInspirations() {
+        return inspirations;
+    }
+
+    public void setInspirations(List<Inspiration> inspirations) {
+        this.inspirations = inspirations;
     }
 
     public int getTotal_votes() {

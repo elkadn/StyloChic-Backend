@@ -9,6 +9,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface CommandeRepository extends JpaRepository<Commande,Long> {
-    @Query("SELECT c FROM Commande c WHERE c.utilisateur.id = :utilisateurId AND (c.statutCommande = 'PLACÉE' OR c.statutCommande = 'CONFIRMÉE' OR c.statutCommande = 'EXPÉDIÉE' OR c.statutCommande = 'LIVRÉE')")
+    @Query("SELECT c FROM Commande c WHERE c.utilisateur.id = :utilisateurId AND (c.statutCommande = 'En cours de préparation' OR c.statutCommande = 'Confirmée' OR c.statutCommande = 'Expédiée' OR c.statutCommande = 'Livrée' OR c.statutCommande = 'Annulée')")
     public List<Commande> avoirCommandesUtilisateur(@Param("utilisateurId") Long utilisateurId);
 }

@@ -52,7 +52,7 @@ public class CommandeClientController {
     }
 
     @PutMapping("/{id}/paiementCash")
-    public ResponseEntity<CommandeDTO> modifierPaiementEnCash(@PathVariable Long id) throws CommandeException {
+    public ResponseEntity<CommandeDTO> modifierPaiementEnCash(@PathVariable Long id) throws CommandeException,UtilisateurException {
         Commande commande = commandeService.modifierCommandeavecPaiementEnCash(id);
         return ResponseEntity.ok(new CommandeDTO(commande));
     }

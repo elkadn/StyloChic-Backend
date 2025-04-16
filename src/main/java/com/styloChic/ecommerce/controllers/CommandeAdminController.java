@@ -3,6 +3,8 @@ package com.styloChic.ecommerce.controllers;
 
 import com.styloChic.ecommerce.dtos.CommandeDTO;
 import com.styloChic.ecommerce.exceptions.CommandeException;
+import com.styloChic.ecommerce.exceptions.UtilisateurException;
+import com.styloChic.ecommerce.models.Utilisateur;
 import com.styloChic.ecommerce.responses.ApiResponse;
 import com.styloChic.ecommerce.services.CommandeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,15 @@ public class CommandeAdminController {
     public ResponseEntity<List<CommandeDTO>> obtenierToutesCommandes(@RequestHeader("Authorization") String jwt) throws CommandeException{
         List<CommandeDTO> commandeDTOS = commandeService.avoirToutesCommandes(jwt);
         return new ResponseEntity<List<CommandeDTO>>(commandeDTOS, HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CommandeDTO> chercherCommandeParIdPourAdmin(@PathVariable("id") Long commandeId,
+                                                             @RequestHeader("Authorization") String jwt) throws CommandeException {
+
+        CommandeDTO commandeDTO = commandeService.chercherCommandeParIdPourAdmin(commandeId,jwt);
+
+        return new ResponseEntity<>(commandeDTO,HttpStatus.CREATED);
     }
 
     @PutMapping("/{idCommande}/confirmer")

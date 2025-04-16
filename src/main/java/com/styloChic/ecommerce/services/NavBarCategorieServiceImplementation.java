@@ -38,6 +38,7 @@ public class NavBarCategorieServiceImplementation implements NavBarCategorieServ
             List<OffreSpecialeDTO> offreSpecialeDTOs = new ArrayList<>();
             for (OffreSpeciale offre : categorie.getOffresSpeciales()) {
                 OffreSpecialeDTO dto = new OffreSpecialeDTO(
+                        offre.getId(),
                         offre.getNom(),
                         offre.getUrlImage(),
                         offre.getDescriptionImage(),
@@ -92,6 +93,17 @@ public class NavBarCategorieServiceImplementation implements NavBarCategorieServ
     public NavBarCategorie avoirNavBarCategorieParId(Long id) throws CategorieException {
         return navBarCategorieRepository.findById(id)
                 .orElseThrow(() -> new CategorieException("Aucune nav bar categorie trouvé avec id " + id));
+    }
+
+    @Override
+    public NavBarCategorieDTO avoirNavBarCategorieParIdParticulier(Long id) throws CategorieException {
+        NavBarCategorie entity = navBarCategorieRepository.findById(id)
+                .orElseThrow(() -> new CategorieException("Aucune nav bar categorie trouvé avec id " + id));
+
+        return new NavBarCategorieDTO(
+                entity.getId(),
+                entity.getNom()
+        );
     }
 
 }

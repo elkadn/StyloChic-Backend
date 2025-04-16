@@ -2,6 +2,7 @@ package com.styloChic.ecommerce.services;
 
 import com.styloChic.ecommerce.config.JwtProvider;
 import com.styloChic.ecommerce.dtos.CouleurDTO;
+import com.styloChic.ecommerce.exceptions.CategorieException;
 import com.styloChic.ecommerce.exceptions.CouleurException;
 import com.styloChic.ecommerce.models.Couleur;
 import com.styloChic.ecommerce.models.Utilisateur;
@@ -97,6 +98,10 @@ public class CouleurServiceImplementation implements CouleurService {
         Couleur couleur = couleurRepository.findById(id)
                 .orElseThrow(() -> new CouleurException("Couleur introuvable avec l'ID : " + id));
 
+
+        if (couleurRepository.count() > 0) {
+            throw new CouleurException("Impossible de supprimer cette couleur car elle est liée à des produits !");
+        }
         couleurRepository.delete(couleur);
     }
 }

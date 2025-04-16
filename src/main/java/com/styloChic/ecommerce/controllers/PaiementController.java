@@ -137,15 +137,16 @@ public class PaiementController {
 
     @GetMapping("/stripe/success")
     public ResponseEntity<ApiResponse> stripePaiementSuccess(
-            @RequestParam("sessionId") String sessionId,
+            @RequestParam("session_id") String session_id,
             @RequestParam("commandeId") Long commandeId)
             throws Exception {
 
         Commande commande = commandeService.chercherCommandeParIdParticuliere(commandeId);
 
         try {
-            Session session = Session.retrieve(sessionId);
+            Session session = Session.retrieve(session_id);
             PaymentIntent paymentIntent = PaymentIntent.retrieve(session.getPaymentIntent());
+
             if ("succeeded".equals(paymentIntent.getStatus())) {
                 if (commande.getDetailsPaiement() == null) {
                     commande.setDetailsPaiement(new DetailsPaiement());
