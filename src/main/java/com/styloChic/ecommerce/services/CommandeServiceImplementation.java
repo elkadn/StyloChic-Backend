@@ -88,6 +88,7 @@ public class CommandeServiceImplementation implements CommandeService{
         commandeCree.setAdresseLivrasion(addresse);
         commandeCree.setDateCommande(LocalDateTime.now());
         commandeCree.setStatutCommande("En attente");
+        commandeCree.getDetailsPaiement().setMethodePaiement("En cours");
         commandeCree.setDateCreation(LocalDateTime.now());
         String numCommande = generateUniqueCommandeNumber();
         commandeCree.setNumCommande(numCommande);
@@ -511,6 +512,34 @@ public class CommandeServiceImplementation implements CommandeService{
         panierService.viderPanier(commande.getUtilisateur().getId());
 
         return commandeRepository.save(commande);
+    }
+
+
+    @Override
+    public CommandeDTO mettreAJourDateLivraison(Long commandeId, LocalDateTime nouvelleDateLivraison, String jwt) throws CommandeException {
+        verifierAdmin(jwt);
+        Commande commande = chercherCommandeParIdParticuliere(commandeId);
+        commande.setDateLivraison(nouvelleDateLivraison);
+        commandeRepository.save(commande);
+
+        CommandeDTO commandeDTO = new CommandeDTO();
+        commandeDTO.setId(commande.getId());
+        commandeDTO.setTotalHT(commande.getTotalHT());
+        commandeDTO.setTotalTTC(commande.getTotalTTC());
+        commandeDTO.setMontantReduit(commande.getMontantReduit());
+        commandeDTO.setMontantBase(commande.getMontantBase());
+        commandeDTO.setPrixTTCReduit(commande.getPrixTTCReduit());
+        commandeDTO.setTva(commande.getTva());
+        commandeDTO.setStatutCommande(commande.getStatutCommande());
+        commandeDTO.setDateCommande(commande.getDateCommande());
+        commandeDTO.setDateLivraison(commande.getDateLivraison());
+        commandeDTO.setDateCreation(commande.getDateCreation());
+        commandeDTO.setPourcentageReduction(commande.getPourcentageReduction());
+        commandeDTO.setNumCommande(commande.getNumCommande());
+        commandeDTO.setTotalElements(commande.getTotalElements());
+        commandeDTO.setAdresseLivrasion(commande.getAdresseLivrasion());
+
+        return commandeDTO;
     }
 
 

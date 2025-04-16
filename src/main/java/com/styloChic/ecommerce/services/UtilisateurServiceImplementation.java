@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -226,6 +227,11 @@ public class UtilisateurServiceImplementation implements UtilisateurService {
         if (nouveauMotDePasse.length() < 8) {
             throw new UtilisateurException("Le mot de passe doit contenir au moins 8 caractères !");
         }
+
+        if (passwordEncoder.matches(nouveauMotDePasse, cible.getMotDePasse())) {
+            throw new UtilisateurException("Le nouveau mot de passe doit être différent de l'ancien !");
+        }
+
 
         String motDePasseEncode = passwordEncoder.encode(nouveauMotDePasse);
         cible.setMotDePasse(motDePasseEncode);

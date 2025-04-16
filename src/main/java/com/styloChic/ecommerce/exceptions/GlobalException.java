@@ -12,7 +12,7 @@ public class GlobalException {
 
     @ExceptionHandler(UtilisateurException.class)
     public ResponseEntity<Object> UtilisateurException(UtilisateurException ex) {
-        if (ex.getMessage().contains("Acc40ès interdit")) {
+        if (ex.getMessage().contains("Accès interdit") || ex.getMessage().contains("pas autorisé")) {
             return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.FORBIDDEN);
         }
 
@@ -20,7 +20,7 @@ public class GlobalException {
             return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.NOT_FOUND);
         }
 
-        if (ex.getMessage().contains("L'email est déjà utilisé")) {
+        if (ex.getMessage().contains("L'email est déjà utilisé") || ex.getMessage().contains("doit être différent") || ex.getMessage().contains("doit contenir au moins 8")) {
             return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.CONFLICT);
         }
 
@@ -162,6 +162,32 @@ public class GlobalException {
 
         if (ex.getMessage().contains("introuvable")) {
             return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(DemandePersonnalisationException.class)
+    public ResponseEntity<Object> DemandePersonnalisationException(DemandePersonnalisationException ex) {
+        if (ex.getMessage().contains("Accès interdit")) {
+            return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.FORBIDDEN);
+        }
+
+        if (ex.getMessage().contains("non trouvée")) {
+            return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(RetourException.class)
+    public ResponseEntity<Object> RetourException(RetourException ex) {
+        if (ex.getMessage().contains("Accès interdit")) {
+            return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.FORBIDDEN);
+        }
+
+        if (ex.getMessage().contains("ne sont possibles")) {
+            return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.UNAUTHORIZED);
         }
 
         return new ResponseEntity<>(new ErreurResponse(ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);

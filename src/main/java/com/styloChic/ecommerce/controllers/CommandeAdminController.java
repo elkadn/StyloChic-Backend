@@ -5,6 +5,7 @@ import com.styloChic.ecommerce.dtos.CommandeDTO;
 import com.styloChic.ecommerce.exceptions.CommandeException;
 import com.styloChic.ecommerce.exceptions.UtilisateurException;
 import com.styloChic.ecommerce.models.Utilisateur;
+import com.styloChic.ecommerce.requests.UpdateDateLivraisonRequest;
 import com.styloChic.ecommerce.responses.ApiResponse;
 import com.styloChic.ecommerce.services.CommandeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -81,5 +83,18 @@ public class CommandeAdminController {
     }
 
 
+    @PutMapping("/{idCommande}/dateLivraison")
+    public ResponseEntity<CommandeDTO> mettreAJourDateLivraison(
+            @PathVariable Long idCommande,
+            @RequestBody UpdateDateLivraisonRequest request,
+            @RequestHeader("Authorization") String jwt) throws CommandeException {
+
+        CommandeDTO commandeDTO = commandeService.mettreAJourDateLivraison(
+                idCommande,
+                request.getNouvelleDateLivraison(),
+                jwt
+        );
+        return new ResponseEntity<>(commandeDTO, HttpStatus.OK);
+    }
 
 }

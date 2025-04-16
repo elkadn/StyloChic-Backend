@@ -7,6 +7,7 @@ import com.styloChic.ecommerce.models.AdresseCommande;
 import com.styloChic.ecommerce.models.Commande;
 import com.styloChic.ecommerce.models.Utilisateur;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface CommandeService {
@@ -36,5 +37,7 @@ public interface CommandeService {
     public void supprimerCommande(Long commandeId,String jwt) throws CommandeException;
 
     Commande modifierCommandeavecPaiementEnCash(Long commandeId) throws CommandeException,UtilisateurException;
+
+    public CommandeDTO mettreAJourDateLivraison(Long commandeId, LocalDateTime nouvelleDateLivraison, String jwt) throws CommandeException;
 
 }
