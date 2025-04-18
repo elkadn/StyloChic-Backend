@@ -2,13 +2,9 @@ package com.styloChic.ecommerce.services;
 
 import com.styloChic.ecommerce.exceptions.FournisseurException;
 import com.styloChic.ecommerce.exceptions.ProduitException;
-import com.styloChic.ecommerce.models.ImageProduit;
 import com.styloChic.ecommerce.models.Produit;
 import com.styloChic.ecommerce.requests.CreationProduitRequest;
-import com.styloChic.ecommerce.responses.ImageProduitAdminResponse;
-import com.styloChic.ecommerce.responses.ImageProduitClientResponse;
-import com.styloChic.ecommerce.responses.ProduitAdminResponse;
-import com.styloChic.ecommerce.responses.ProduitClientResponse;
+import com.styloChic.ecommerce.responses.*;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -46,4 +42,10 @@ public interface ProduitService {
     public Produit miseAjourProduit(Long idProduit, CreationProduitRequest requete,String jwt) throws ProduitException,FournisseurException;
 
     public Produit chercherProduit(Long id) throws ProduitException;
+
+    public long compterProduits(String jwt) throws ProduitException;
+
+    public List<ProduitBest10Response> getTop10ProduitsLesPlusVendus();
+
+
 }

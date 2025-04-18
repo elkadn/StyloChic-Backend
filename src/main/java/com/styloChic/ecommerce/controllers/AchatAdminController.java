@@ -1,7 +1,9 @@
 package com.styloChic.ecommerce.controllers;
 
 import com.styloChic.ecommerce.dtos.AchatDTO;
+import com.styloChic.ecommerce.exceptions.AchatException;
 import com.styloChic.ecommerce.requests.AchatRequest;
+import com.styloChic.ecommerce.requests.UpdateDateLivraisonRequest;
 import com.styloChic.ecommerce.services.AchatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -63,5 +65,19 @@ public class AchatAdminController {
     public ResponseEntity<List<AchatDTO>> avoirTousAchats(@RequestHeader("Authorization") String jwt) throws Exception {
         List<AchatDTO> achats = achatService.avoirTousAchats(jwt);
         return new ResponseEntity<>(achats, HttpStatus.OK);
+    }
+
+    @PutMapping("/{idAchat}/dateReception")
+    public ResponseEntity<AchatDTO> mettreAJourDateReception(
+            @PathVariable Long idAchat,
+            @RequestBody UpdateDateLivraisonRequest request,
+            @RequestHeader("Authorization") String jwt) throws AchatException {
+
+        AchatDTO achatDTO = achatService.mettreAJourDateReception(
+                idAchat,
+                request.getNouvelleDateLivraison(),
+                jwt
+        );
+        return new ResponseEntity<>(achatDTO, HttpStatus.OK);
     }
 }

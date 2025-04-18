@@ -40,4 +40,5 @@ public interface CommandeService {
 
     public CommandeDTO mettreAJourDateLivraison(Long commandeId, LocalDateTime nouvelleDateLivraison, String jwt) throws CommandeException;
 
+    public long compterCommandes(String jwt) throws CommandeException;
 }

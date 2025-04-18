@@ -3,8 +3,6 @@ package com.styloChic.ecommerce.controllers;
 
 import com.styloChic.ecommerce.dtos.CommandeDTO;
 import com.styloChic.ecommerce.exceptions.CommandeException;
-import com.styloChic.ecommerce.exceptions.UtilisateurException;
-import com.styloChic.ecommerce.models.Utilisateur;
 import com.styloChic.ecommerce.requests.UpdateDateLivraisonRequest;
 import com.styloChic.ecommerce.responses.ApiResponse;
 import com.styloChic.ecommerce.services.CommandeService;
@@ -13,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -95,6 +92,13 @@ public class CommandeAdminController {
                 jwt
         );
         return new ResponseEntity<>(commandeDTO, HttpStatus.OK);
+    }
+
+
+    @GetMapping("/count")
+    public ResponseEntity<Long> compterCommandes(@RequestHeader("Authorization") String jwt) throws CommandeException {
+        long total = commandeService.compterCommandes(jwt);
+        return new ResponseEntity<>(total, HttpStatus.OK);
     }
 
 }

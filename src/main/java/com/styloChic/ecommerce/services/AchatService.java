@@ -4,6 +4,7 @@ import com.styloChic.ecommerce.dtos.AchatDTO;
 import com.styloChic.ecommerce.exceptions.AchatException;
 import com.styloChic.ecommerce.requests.AchatRequest;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface AchatService {
@@ -14,6 +15,9 @@ public interface AchatService {
     AchatDTO receptionnerAchat(Long achatId, String jwt) throws Exception;
     AchatDTO annulerAchat(Long achatId, String jwt) throws Exception;
     List<AchatDTO> avoirTousAchats(String jwt) throws AchatException;
+
+    public AchatDTO mettreAJourDateReception(Long achatId, LocalDateTime nouvelleDateAchat, String jwt) throws AchatException;
+
 }
 
 

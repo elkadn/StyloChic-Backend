@@ -8,7 +8,9 @@ import com.styloChic.ecommerce.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CategorieServiceImplementation implements CategorieService{
@@ -206,5 +208,42 @@ public class CategorieServiceImplementation implements CategorieService{
         categorieRepository.delete(categorie);
     }
 
+    @Override
+    public List<String> getNomsCategoriesNiveau3() {
+        return categorieRepository.findNomsByNiveau3();
+    }
+
+
+    @Override
+    public long compterCategories(String jwt) throws CategorieException {
+        String adminEmail = jwtProvider.getEmailFromToken(jwt);
+        Utilisateur admin = utilisateurRepository.chercherParEmail(adminEmail);
+
+        if (admin == null || !admin.getRole().equals("ADMIN")) {
+            throw new CategorieException("Accès interdit : vous devez être un administrateur pour effectuer cette action !");
+        }
+
+        return categorieRepository.compterCategories();
+    }
+
+
+    @Override
+    public Map<String, Double> avoirVentePaCategorie(String jwt) throws CategorieException {
+        verifierAdmin(jwt);
+
+        List<Object[]> results = categorieRepository.avoirVentePaCategorie();
+        Map<String, Double> salesDistribution = new LinkedHashMap<>();
+
+        List<Categorie> mainCategories = categorieRepository.findByNiveau(1);
+        mainCategories.forEach(c -> salesDistribution.put(c.getNom(), 0.0));
+
+        results.forEach(result -> {
+            String categoryName = (String) result[0];
+            Double totalSales = ((Number) result[1]).doubleValue();
+            salesDistribution.put(categoryName, totalSales);
+        });
+
+        return salesDistribution;
+    }
 
 }

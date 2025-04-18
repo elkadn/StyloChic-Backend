@@ -15,4 +15,5 @@ public class ProduitClientResponse extends BaseProduitResponse{
         super(id,titre,description,tva,prixVenteHT,prixVenteTTC,prixVenteTTCReduit,pourcentageReduction,categorieParente,categorieMoyenne,categorieBase,quantiteEnStock,imagePrincipale,saison,conseilEntretien,nomCouleur,tailles,imagesProduit,votes,avis,inspirations,total_votes,total_avis);
     }
 
+
 }

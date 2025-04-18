@@ -2,13 +2,11 @@ package com.styloChic.ecommerce.services;
 
 import com.styloChic.ecommerce.config.JwtProvider;
 import com.styloChic.ecommerce.dtos.CouleurDTO;
-import com.styloChic.ecommerce.exceptions.CategorieException;
 import com.styloChic.ecommerce.exceptions.CouleurException;
 import com.styloChic.ecommerce.models.Couleur;
 import com.styloChic.ecommerce.models.Utilisateur;
 import com.styloChic.ecommerce.repositories.CouleurRepository;
 import com.styloChic.ecommerce.repositories.UtilisateurRepository;
-import com.styloChic.ecommerce.services.CouleurService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -103,5 +101,17 @@ public class CouleurServiceImplementation implements CouleurService {
             throw new CouleurException("Impossible de supprimer cette couleur car elle est liée à des produits !");
         }
         couleurRepository.delete(couleur);
+    }
+
+    @Override
+    public long compterCouleurs(String jwt) throws CouleurException {
+        String adminEmail = jwtProvider.getEmailFromToken(jwt);
+        Utilisateur admin = utilisateurRepository.chercherParEmail(adminEmail);
+
+        if (admin == null || !admin.getRole().equals("ADMIN")) {
+            throw new CouleurException("Accès interdit : vous devez être un administrateur pour effectuer cette action !");
+        }
+
+        return couleurRepository.count();
     }
 }

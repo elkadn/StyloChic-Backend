@@ -1,15 +1,14 @@
 package com.styloChic.ecommerce.repositories;
 
-import com.styloChic.ecommerce.dtos.TailleDTO;
+import com.styloChic.ecommerce.exceptions.ProduitException;
 import com.styloChic.ecommerce.models.Produit;
-import com.styloChic.ecommerce.responses.ProduitClientResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 public interface ProduitRepository extends JpaRepository<Produit,Long> {
     @Query("SELECT p FROM Produit p " +
@@ -31,6 +30,9 @@ public interface ProduitRepository extends JpaRepository<Produit,Long> {
 
     @Query(value = "SELECT DISTINCT tp.nom FROM tailles_produit tp", nativeQuery = true)
     List<String> findDistinctTailleNomsNative();
+
+
+
 
 
 }

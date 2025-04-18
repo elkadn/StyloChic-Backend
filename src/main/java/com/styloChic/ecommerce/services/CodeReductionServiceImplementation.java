@@ -92,4 +92,17 @@ public class CodeReductionServiceImplementation implements CodeReductionService{
     }
 
 
+    @Override
+    public long compterCodePromos(String jwt) throws CodeReductionException {
+        String adminEmail = jwtProvider.getEmailFromToken(jwt);
+        Utilisateur admin = utilisateurRepository.chercherParEmail(adminEmail);
+
+        if (admin == null || !admin.getRole().equals("ADMIN")) {
+            throw new CodeReductionException("Accès interdit : vous devez être un administrateur pour effectuer cette action !");
+        }
+
+        return codeReductionRepository.count();
+    }
+
+
 }

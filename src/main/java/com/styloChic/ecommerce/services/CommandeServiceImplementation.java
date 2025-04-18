@@ -4,7 +4,6 @@ import com.styloChic.ecommerce.config.JwtProvider;
 import com.styloChic.ecommerce.dtos.CommandeDTO;
 import com.styloChic.ecommerce.dtos.LigneCommandeDTO;
 import com.styloChic.ecommerce.exceptions.CommandeException;
-import com.styloChic.ecommerce.exceptions.CouleurException;
 import com.styloChic.ecommerce.exceptions.UtilisateurException;
 import com.styloChic.ecommerce.models.*;
 import com.styloChic.ecommerce.repositories.*;
@@ -540,6 +539,19 @@ public class CommandeServiceImplementation implements CommandeService{
         commandeDTO.setAdresseLivrasion(commande.getAdresseLivrasion());
 
         return commandeDTO;
+    }
+
+
+    @Override
+    public long compterCommandes(String jwt) throws CommandeException {
+        String adminEmail = jwtProvider.getEmailFromToken(jwt);
+        Utilisateur admin = utilisateurRepository.chercherParEmail(adminEmail);
+
+        if (admin == null || !admin.getRole().equals("ADMIN")) {
+            throw new CommandeException("Accès interdit : vous devez être un administrateur pour effectuer cette action !");
+        }
+
+        return commandeRepository.count();
     }
 
 

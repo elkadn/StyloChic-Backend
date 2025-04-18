@@ -3,6 +3,7 @@ package com.styloChic.ecommerce.services;
 
 import com.styloChic.ecommerce.config.JwtProvider;
 import com.styloChic.ecommerce.dtos.AchatDTO;
+import com.styloChic.ecommerce.dtos.LigneAchatDTO;
 import com.styloChic.ecommerce.exceptions.AchatException;
 import com.styloChic.ecommerce.models.*;
 import com.styloChic.ecommerce.repositories.*;
@@ -50,7 +51,6 @@ public class AchatServiceImplementation implements AchatService {
         Fournisseur fournisseur = fournisseurRepository.findById(request.getFournisseurId())
                 .orElseThrow(() -> new Exception("Fournisseur non trouvé"));
 
-        // Créer une nouvelle instance d'AdresseAchat à partir de la requête
         AdresseAchat adresseAchat = new AdresseAchat();
         adresseAchat.setNomSociete(request.getAdresseAchat().getNomSociete());
         adresseAchat.setAdresse(request.getAdresseAchat().getAdresse());
@@ -180,6 +180,33 @@ public class AchatServiceImplementation implements AchatService {
                         achat.getAdresseReception().getRegion() + ", " +
                         achat.getAdresseReception().getZipCode()
         );
+
+        List<LigneAchatDTO> lignesDTO = new ArrayList<>();
+        for (LigneAchat ligne : achat.getLignesAchat()) {
+            LigneAchatDTO ligneDTO = new LigneAchatDTO();
+            ligneDTO.setId(ligne.getId());
+            ligneDTO.setIdProduit(ligne.getProduit().getId());
+            ligneDTO.setTitreProduit(ligne.getProduit().getTitre());
+            ligneDTO.setCouleurProduit(ligne.getProduit().getCouleur().getNom());
+            ligneDTO.setImageProduit(ligne.getProduit().getImagePrincipale());
+            ligneDTO.setPrixProduitHT(ligne.getProduit().getPrixVenteHT());
+            ligneDTO.setPrixProduitTTC(ligne.getProduit().getPrixVenteTTC());
+            ligneDTO.setSaisonProduit(ligne.getProduit().getSaison());
+            ligneDTO.setConseilEntretienProduit(ligne.getProduit().getConseilEntretien());
+            ligneDTO.setPrixProduitReduit(ligne.getProduit().getPrixVenteTTCReduit());
+            ligneDTO.setPourcentageReductionProduit(ligne.getProduit().getPourcentageReduction());
+            ligneDTO.setDescriptionProduit(ligne.getProduit().getDescription());
+
+
+            ligneDTO.setTaille(ligne.getTaille());
+            ligneDTO.setQuantite(ligne.getQuantite());
+            ligneDTO.setPrixHT(ligne.getPrixHT());
+            ligneDTO.setPrixTTC(ligne.getPrixTTC());
+            ligneDTO.setTva(ligne.getTva());
+            lignesDTO.add(ligneDTO);
+        }
+        dto.setLignesAchat(lignesDTO);
+
         return dto;
     }
 
@@ -191,4 +218,17 @@ public class AchatServiceImplementation implements AchatService {
         }
         return admin;
     }
+
+    @Override
+    public AchatDTO mettreAJourDateReception(Long achatId, LocalDateTime nouvelleDateReception, String jwt) throws AchatException {
+        verifierAdmin(jwt);
+        Achat achat = achatRepository.findById(achatId)
+                .orElseThrow(() -> new AchatException("Achat non trouvé"));
+
+        achat.setDateReception(nouvelleDateReception);
+        achatRepository.save(achat);
+
+        return convertToDTO(achat);
+    }
+
 }

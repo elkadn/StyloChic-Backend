@@ -64,5 +64,11 @@ public class UtilisateurAdminController {
         return new ResponseEntity<>(utilisateurMisAJour, HttpStatus.OK);
     }
 
+    @GetMapping("/admin/count")
+    public ResponseEntity<Long> compterUtilisateurs(@RequestHeader("Authorization") String jwt) throws UtilisateurException {
+        long total = utilisateurService.compterUtilisateurs(jwt);
+        return new ResponseEntity<>(total, HttpStatus.OK);
+    }
+
 
 }

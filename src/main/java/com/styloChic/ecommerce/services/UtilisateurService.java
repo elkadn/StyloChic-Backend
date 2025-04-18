@@ -26,6 +26,8 @@ public interface UtilisateurService {
 
     public void changerMotDePasse(Long utilisateurId, String nouveauMotDePasse, String jwt) throws UtilisateurException;
 
+    public long compterUtilisateurs(String jwt) throws UtilisateurException;
+
 }
 
 

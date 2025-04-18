@@ -6,10 +6,7 @@ import com.styloChic.ecommerce.exceptions.ProduitException;
 import com.styloChic.ecommerce.models.*;
 import com.styloChic.ecommerce.repositories.*;
 import com.styloChic.ecommerce.requests.CreationProduitRequest;
-import com.styloChic.ecommerce.responses.ImageProduitAdminResponse;
-import com.styloChic.ecommerce.responses.ImageProduitClientResponse;
-import com.styloChic.ecommerce.responses.ProduitAdminResponse;
-import com.styloChic.ecommerce.responses.ProduitClientResponse;
+import com.styloChic.ecommerce.responses.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -43,6 +40,9 @@ public class ProduitServiceImplementation implements ProduitService{
 
     @Autowired
     private JwtProvider jwtProvider;
+
+    @Autowired
+    private LigneCommandeRepository ligneCommandeRepository;
 
     private Utilisateur verifierAdmin(String jwt) throws ProduitException {
         String email = jwtProvider.getEmailFromToken(jwt);
@@ -463,58 +463,35 @@ public class ProduitServiceImplementation implements ProduitService{
         );
     }
 
+    @Override
+    public long compterProduits(String jwt) throws ProduitException {
+        String adminEmail = jwtProvider.getEmailFromToken(jwt);
+        Utilisateur admin = utilisateurRepository.chercherParEmail(adminEmail);
 
-
-
-
-
-    /*@Override
-    public Product updateProduct(Long productId, CreateProductRequest req) throws ProductException {
-        Product product = findProductById(productId);
-
-        Category topLevel = categoryRepository.findByName(req.getTopLevelCategory());
-
-        if (topLevel == null) {
-            Category topLevelCategory = new Category();
-            topLevelCategory.setName(req.getTopLevelCategory());
-            topLevelCategory.setLevel(1);
-            topLevel = categoryRepository.save(topLevelCategory);
+        if (admin == null || !admin.getRole().equals("ADMIN")) {
+            throw new ProduitException("Accès interdit : vous devez être un administrateur pour effectuer cette action !");
         }
 
-        Category secondLevel = categoryRepository.findByNameAndParent(req.getSecondLevelCategory(), topLevel.getName());
-        if (secondLevel == null) {
-            Category secondLevelCategory = new Category();
-            secondLevelCategory.setName(req.getSecondLevelCategory());
-            secondLevelCategory.setParentCategory(topLevel);
-            secondLevelCategory.setLevel(2);
-            secondLevel = categoryRepository.save(secondLevelCategory);
-        }
-
-        Category thirdLevel = categoryRepository.findByNameAndParent(req.getThirdLevelCategory(), secondLevel.getName());
-        if (thirdLevel == null) {
-            Category thirdLevelCategory = new Category();
-            thirdLevelCategory.setName(req.getThirdLevelCategory());
-            thirdLevelCategory.setParentCategory(secondLevel);
-            thirdLevelCategory.setLevel(3);
-            thirdLevel = categoryRepository.save(thirdLevelCategory);
-        }
-        product.setTitle(req.getTitle());
-        product.setColor(req.getColor());
-        product.setDescription(req.getDescription());
-        product.setNumRatings(req.getNumRatings());
-        product.setDiscountedPrice(req.getDiscountedPrice());
-        product.setDiscountedPresent(req.getDiscountPercent());
-        product.setImageUrl(req.getImageUrl());
-        product.setBrand(req.getBrand());
-        product.setPrice(req.getPrice());
-        product.setSizes(req.getSize());
-        product.setCategory(thirdLevel);
-        product.setQuantity(req.getQuantity());
-
-        return productRepository.save(product);
+        return produitRepository.count();
     }
 
-*/
+    @Override
+    public List<ProduitBest10Response> getTop10ProduitsLesPlusVendus() {
+        List<Object[]> results = ligneCommandeRepository.findTop10ProductsBySales();
+
+        return results.stream()
+                .map(result -> {
+                    Produit produit = (Produit) result[0];
+                    Long totalVentes = (Long) result[1];
+
+                    return new ProduitBest10Response(
+                            produit.getId(),
+                            produit.getTitre(),
+                            totalVentes
+                    );
+                })
+                .collect(Collectors.toList());
+    }
 
 
 

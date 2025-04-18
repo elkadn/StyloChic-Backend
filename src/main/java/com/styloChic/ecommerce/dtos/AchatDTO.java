@@ -1,6 +1,7 @@
 package com.styloChic.ecommerce.dtos;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class AchatDTO {
     private Long id;
@@ -16,10 +17,13 @@ public class AchatDTO {
     private String adminNom;
     private String adresseReception;
 
+    private List<LigneAchatDTO> lignesAchat;
+
+
     public AchatDTO() {
     }
 
-    public AchatDTO(Long id, String numAchat, LocalDateTime dateAchat, LocalDateTime dateReception, String statutAchat, Double totalHT, Double totalTTC, Double tva, String fournisseurNom, String adminNom, String adresseReception) {
+    public AchatDTO(Long id, String numAchat, LocalDateTime dateAchat, LocalDateTime dateReception, String statutAchat, Double totalHT, Double totalTTC, Double tva, String fournisseurNom, String adminNom, String adresseReception,List<LigneAchatDTO> lignesAchat) {
         this.id = id;
         this.numAchat = numAchat;
         this.dateAchat = dateAchat;
@@ -31,6 +35,7 @@ public class AchatDTO {
         this.fournisseurNom = fournisseurNom;
         this.adminNom = adminNom;
         this.adresseReception = adresseReception;
+        this.lignesAchat = lignesAchat;
     }
 
     public Long getId() {
@@ -119,6 +124,14 @@ public class AchatDTO {
 
     public void setAdresseReception(String adresseReception) {
         this.adresseReception = adresseReception;
+    }
+
+    public List<LigneAchatDTO> getLignesAchat() {
+        return lignesAchat;
+    }
+
+    public void setLignesAchat(List<LigneAchatDTO> lignesAchat) {
+        this.lignesAchat = lignesAchat;
     }
 }
 

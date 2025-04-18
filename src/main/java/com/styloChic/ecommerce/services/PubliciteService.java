@@ -81,4 +81,15 @@ public class PubliciteService {
         }
         return admin;
     }
+
+    public long compterPublicites(String jwt) throws PubiliciteException {
+        String adminEmail = jwtProvider.getEmailFromToken(jwt);
+        Utilisateur admin = utilisateurRepository.chercherParEmail(adminEmail);
+
+        if (admin == null || !admin.getRole().equals("ADMIN")) {
+            throw new PubiliciteException("Accès interdit : vous devez être un administrateur pour effectuer cette action !");
+        }
+
+        return publiciteRepository.count();
+    }
 }

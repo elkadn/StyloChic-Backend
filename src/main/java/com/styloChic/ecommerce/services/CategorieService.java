@@ -4,6 +4,7 @@ import com.styloChic.ecommerce.dtos.CategorieDTO;
 import com.styloChic.ecommerce.exceptions.CategorieException;
 import com.styloChic.ecommerce.models.Categorie;
 import java.util.List;
+import java.util.Map;
 
 public interface CategorieService {
 
@@ -17,4 +18,10 @@ public interface CategorieService {
 
     public void supprimerCategorie(Long id, String jwt) throws CategorieException;
 
-    }
+    List<String> getNomsCategoriesNiveau3();
+
+    public long compterCategories(String jwt) throws CategorieException;
+
+    public Map<String, Double> avoirVentePaCategorie(String jwt) throws CategorieException;
+
+}

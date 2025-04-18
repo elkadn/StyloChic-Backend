@@ -1,6 +1,7 @@
 package com.styloChic.ecommerce.controllers;
 
 import com.styloChic.ecommerce.dtos.CodeReductionDTO;
+import com.styloChic.ecommerce.exceptions.CategorieException;
 import com.styloChic.ecommerce.exceptions.CodeReductionException;
 import com.styloChic.ecommerce.models.CodeReduction;
 import com.styloChic.ecommerce.services.CodeReductionService;
@@ -46,5 +47,11 @@ public class CodeReductionController {
     public ResponseEntity<String> supprimerCodePromo(@PathVariable Long id, @RequestHeader("Authorization") String jwt) throws CodeReductionException {
         codeReductionService.supprimerCodePromo(id, jwt);
         return new ResponseEntity<>("Code promo supprimé avec succès !", HttpStatus.OK);
+    }
+
+    @GetMapping("/admin/count")
+    public ResponseEntity<Long> compterCodePromos(@RequestHeader("Authorization") String jwt) throws CodeReductionException {
+        long total = codeReductionService.compterCodePromos(jwt);
+        return new ResponseEntity<>(total, HttpStatus.OK);
     }
 }

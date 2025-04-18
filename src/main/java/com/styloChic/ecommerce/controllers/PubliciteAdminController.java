@@ -1,6 +1,7 @@
 package com.styloChic.ecommerce.controllers;
 
 import com.styloChic.ecommerce.dtos.PubliciteDTO;
+import com.styloChic.ecommerce.exceptions.CommandeException;
 import com.styloChic.ecommerce.exceptions.PubiliciteException;
 import com.styloChic.ecommerce.models.Publicite;
 import com.styloChic.ecommerce.services.PubliciteService;
@@ -45,6 +46,12 @@ public class PubliciteAdminController {
         } catch (PubiliciteException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<Long> compterPublicites(@RequestHeader("Authorization") String jwt) throws PubiliciteException {
+        long total = publiciteService.compterPublicites(jwt);
+        return new ResponseEntity<>(total, HttpStatus.OK);
     }
 
 }

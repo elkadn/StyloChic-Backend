@@ -13,4 +13,6 @@ public interface CodeReductionService {
     CodeReduction chercherCodePromoParId(Long id, String jwt) throws CodeReductionException;
     CodeReduction mettreAJourCodePromo(Long id, CodeReductionDTO codeReductionDTO, String jwt) throws CodeReductionException;
     void supprimerCodePromo(Long id, String jwt) throws CodeReductionException;
+
+    public long compterCodePromos(String jwt) throws CodeReductionException;
 }

@@ -240,6 +240,18 @@ public class UtilisateurServiceImplementation implements UtilisateurService {
         utilisateurRepository.save(cible);
     }
 
+    @Override
+    public long compterUtilisateurs(String jwt) throws UtilisateurException {
+        String adminEmail = jwtProvider.getEmailFromToken(jwt);
+        Utilisateur admin = utilisateurRepository.chercherParEmail(adminEmail);
+
+        if (admin == null || !admin.getRole().equals("ADMIN")) {
+            throw new UtilisateurException("Accès interdit : vous devez être un administrateur pour effectuer cette action !");
+        }
+
+        return utilisateurRepository.count();
+    }
+
 
 }
 

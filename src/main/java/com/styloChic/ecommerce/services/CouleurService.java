@@ -17,4 +17,6 @@ public interface CouleurService {
     Couleur mettreAJourCouleur(Long id, CouleurDTO couleurDTO, String jwt) throws CouleurException;
 
     void supprimerCouleur(Long id, String jwt) throws CouleurException;
+
+    public long compterCouleurs(String jwt) throws CouleurException;
 }

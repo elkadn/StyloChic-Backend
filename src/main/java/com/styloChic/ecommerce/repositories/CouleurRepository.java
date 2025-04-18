@@ -15,5 +15,4 @@ public interface CouleurRepository extends JpaRepository<Couleur,Long> {
         @Query("SELECT c.nom FROM Couleur c")
         List<String> findAllNoms();
 
-
 }

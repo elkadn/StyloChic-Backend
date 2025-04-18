@@ -50,4 +50,10 @@ public class CouleurAdminController {
         couleurService.supprimerCouleur(id, jwt);
         return new ResponseEntity<>("Couleur supprimée avec succès !", HttpStatus.OK);
     }
+
+    @GetMapping("/count")
+    public ResponseEntity<Long> compterCouleurs(@RequestHeader("Authorization") String jwt) throws CouleurException {
+        long total = couleurService.compterCouleurs(jwt);
+        return new ResponseEntity<>(total, HttpStatus.OK);
+    }
 }

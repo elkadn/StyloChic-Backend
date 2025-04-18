@@ -87,5 +87,11 @@ public class ProduitAdminController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/count")
+    public ResponseEntity<Long> compterProduits(@RequestHeader("Authorization") String jwt) throws ProduitException {
+        long total = produitService.compterProduits(jwt);
+        return new ResponseEntity<>(total, HttpStatus.OK);
+    }
+
 
 }
