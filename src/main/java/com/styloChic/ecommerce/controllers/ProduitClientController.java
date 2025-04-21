@@ -19,8 +19,8 @@ public class ProduitClientController {
 
     @GetMapping
     public ResponseEntity<Page<ProduitClientResponse>> chercherProduitParCategorie(@RequestParam String categorie,
-                                                                      @RequestParam List<String> couleur,
-                                                                      @RequestParam List<String> taille,
+                                                                      @RequestParam String couleurs,
+                                                                                   @RequestParam(required = false) String tailles, // Changé de List<String> à String
                                                                       @RequestParam Integer prixMin,
                                                                       @RequestParam Integer prixMax,
                                                                       @RequestParam String trie,
@@ -28,7 +28,7 @@ public class ProduitClientController {
                                                                       @RequestParam Integer numPage,
                                                                       @RequestParam Integer taillePage) {
 
-        Page<ProduitClientResponse> resultat = produitService.avoirTousProduits(categorie,couleur,taille,prixMin,prixMax,trie,stock,numPage,taillePage);
+        Page<ProduitClientResponse> resultat = produitService.avoirTousProduits(categorie,couleurs,tailles,prixMin,prixMax,trie,stock,numPage,taillePage);
         return new ResponseEntity<>(resultat, HttpStatus.ACCEPTED);
     }
 

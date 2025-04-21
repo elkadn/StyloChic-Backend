@@ -7,6 +7,7 @@ import com.styloChic.ecommerce.exceptions.CommandeException;
 import com.styloChic.ecommerce.exceptions.UtilisateurException;
 import com.styloChic.ecommerce.models.*;
 import com.styloChic.ecommerce.repositories.*;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -40,6 +41,58 @@ public class CommandeServiceImplementation implements CommandeService{
 
     @Autowired
     private UtilisateurService utilisateurService;
+
+
+
+    private void modifierTailleQuantite(Produit produit, String nomTaille, int quantiteCommandee) {
+        Set<Taille> tailles = produit.getTailles();
+        for (Taille taille : tailles) {
+            if (taille.getNom().equals(nomTaille)) {
+                taille.setQuantiteEnStock(taille.getQuantiteEnStock() - quantiteCommandee);
+                break;
+            }
+        }
+        modifierProduitTotalQuantite(produit);
+        produitRepository.save(produit);
+    }
+
+    @Override
+    @Transactional
+    public CommandeDTO commandeExpediee(Long commandeId,String jwt) throws CommandeException {
+        Commande commande = chercherCommandeParIdParticuliere(commandeId);
+        commande.setStatutCommande("Expédiée");
+
+
+        for (LigneCommande ligneCommande : commande.getLigneCommande()) {
+            Produit produit = ligneCommande.getProduit();
+            String taille = ligneCommande.getTaille();
+
+            int quantiteCommandee = ligneCommande.getQuantite();
+            System.out.println(quantiteCommandee);
+            modifierTailleQuantite(produit, taille, quantiteCommandee);
+        }
+
+        commandeRepository.save(commande);
+
+        CommandeDTO commandeDTO = new CommandeDTO();
+        commandeDTO.setId(commande.getId());
+        commandeDTO.setTotalHT(commande.getTotalHT());
+        commandeDTO.setTotalTTC(commande.getTotalTTC());
+        commandeDTO.setMontantReduit(commande.getMontantReduit());
+        commandeDTO.setMontantBase(commande.getMontantBase());
+        commandeDTO.setPrixTTCReduit(commande.getPrixTTCReduit());
+        commandeDTO.setTva(commande.getTva());
+        commandeDTO.setStatutCommande(commande.getStatutCommande());
+        commandeDTO.setDateCommande(commande.getDateCommande());
+        commandeDTO.setDateLivraison(commande.getDateLivraison());
+        commandeDTO.setDateCreation(commande.getDateCreation());
+        commandeDTO.setPourcentageReduction(commande.getPourcentageReduction());
+        commandeDTO.setNumCommande(commande.getNumCommande());
+        commandeDTO.setTotalElements(commande.getTotalElements());
+        commandeDTO.setAdresseLivrasion(commande.getAdresseLivrasion());
+
+        return commandeDTO;
+    }
 
 
 
@@ -355,40 +408,7 @@ public class CommandeServiceImplementation implements CommandeService{
     }
 
 
-    @Override
-    public CommandeDTO commandeExpediee(Long commandeId,String jwt) throws CommandeException {
-        Commande commande = chercherCommandeParIdParticuliere(commandeId);
-        commande.setStatutCommande("Expédiée");
 
-        for (LigneCommande ligneCommande : commande.getLigneCommande()) {
-            Produit produit = ligneCommande.getProduit();
-            String taille = ligneCommande.getTaille();
-            int quantiteCommandee = ligneCommande.getQuantite();
-
-            modifierTailleQuantite(produit, taille, quantiteCommandee);
-        }
-
-        commandeRepository.save(commande);
-
-        CommandeDTO commandeDTO = new CommandeDTO();
-        commandeDTO.setId(commande.getId());
-        commandeDTO.setTotalHT(commande.getTotalHT());
-        commandeDTO.setTotalTTC(commande.getTotalTTC());
-        commandeDTO.setMontantReduit(commande.getMontantReduit());
-        commandeDTO.setMontantBase(commande.getMontantBase());
-        commandeDTO.setPrixTTCReduit(commande.getPrixTTCReduit());
-        commandeDTO.setTva(commande.getTva());
-        commandeDTO.setStatutCommande(commande.getStatutCommande());
-        commandeDTO.setDateCommande(commande.getDateCommande());
-        commandeDTO.setDateLivraison(commande.getDateLivraison());
-        commandeDTO.setDateCreation(commande.getDateCreation());
-        commandeDTO.setPourcentageReduction(commande.getPourcentageReduction());
-        commandeDTO.setNumCommande(commande.getNumCommande());
-        commandeDTO.setTotalElements(commande.getTotalElements());
-        commandeDTO.setAdresseLivrasion(commande.getAdresseLivrasion());
-
-        return commandeDTO;
-    }
 
     private void modifierProduitTotalQuantite(Produit produit) {
         int quantiteTotal = 0;
@@ -398,17 +418,7 @@ public class CommandeServiceImplementation implements CommandeService{
         produit.setQuantiteEnStock(quantiteTotal);
     }
 
-    private void modifierTailleQuantite(Produit produit, String nomTaille, int quantiteCommandee) {
-        Set<Taille> tailles = produit.getTailles();
-        for (Taille taille : tailles) {
-            if (taille.getNom().equals(nomTaille)) {
-                taille.setQuantiteEnStock(taille.getQuantiteEnStock() - quantiteCommandee);
-                break;
-            }
-        }
-        modifierProduitTotalQuantite(produit);
-        produitRepository.save(produit);
-    }
+
 
     @Override
     public CommandeDTO commandeLivree(Long commandeId,String jwt) throws CommandeException {

@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -266,15 +267,39 @@ public class ProduitServiceImplementation implements ProduitService{
     }
 
     @Override
-    public Page<ProduitClientResponse> avoirTousProduits(String categorie, List<String> couleurs, List<String> tailles, Integer prixMin, Integer prixMax, String trie, String stock, Integer numeroPage, Integer taillePage) {
+    public Page<ProduitClientResponse> avoirTousProduits(String categorie, String couleurs, String tailles, Integer prixMin, Integer prixMax, String trie, String stock, Integer numeroPage, Integer taillePage) {
         Pageable paginable = PageRequest.of(numeroPage, taillePage);
 
         List<Produit> produits = produitRepository.filterProduit(categorie, prixMin, prixMax, trie);
 
-        if (!couleurs.isEmpty()) {
-            produits = produits.stream()
-                    .filter(p -> couleurs.stream().anyMatch(c -> c.equalsIgnoreCase(p.getCouleur().getNom())))
+
+        if (couleurs != null && !couleurs.isEmpty()) {
+            List<String> couleursList = Arrays.stream(couleurs.split(","))
+                    .map(String::trim)
+                    .filter(s -> !s.isEmpty())
                     .collect(Collectors.toList());
+
+            if (!couleursList.isEmpty()) {
+                produits = produits.stream()
+                        .filter(p -> couleursList.stream()
+                                .anyMatch(c -> c.equalsIgnoreCase(p.getCouleur().getNom())))
+                        .collect(Collectors.toList());
+            }
+        }
+
+        if (tailles != null && !tailles.isEmpty()) {
+            List<String> taillesList = Arrays.stream(tailles.split(","))
+                    .map(String::trim)
+                    .filter(s -> !s.isEmpty())
+                    .collect(Collectors.toList());
+
+            if (!taillesList.isEmpty()) {
+                produits = produits.stream()
+                        .filter(p -> p.getTailles().stream()
+                                .anyMatch(tailleProduit -> taillesList.stream()
+                                        .anyMatch(tailleParam -> tailleParam.equalsIgnoreCase(tailleProduit.getNom()))))
+                        .collect(Collectors.toList());
+            }
         }
 
         if (stock != null) {

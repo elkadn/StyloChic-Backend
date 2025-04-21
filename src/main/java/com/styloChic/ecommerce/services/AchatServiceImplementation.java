@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -96,6 +97,7 @@ public class AchatServiceImplementation implements AchatService {
         achatEnregistre.setLignesAchat(lignesAchat);
         return convertToDTO(achatRepository.save(achatEnregistre));
     }
+
     @Override
     public AchatDTO chercherAchatParId(Long achatId, String jwt) throws AchatException {
         verifierAdmin(jwt);
@@ -128,14 +130,38 @@ public class AchatServiceImplementation implements AchatService {
         achat.setStatutAchat("Réceptionné");
         achat.setDateReception(LocalDateTime.now());
 
-        // Mise à jour des stocks
+
         for (LigneAchat ligne : achat.getLignesAchat()) {
             Produit produit = ligne.getProduit();
-            produit.setQuantiteEnStock(produit.getQuantiteEnStock() + ligne.getQuantite());
-            produitRepository.save(produit);
+            String taille = ligne.getTaille();
+
+            int quantiteCommandee = ligne.getQuantite();
+            System.out.println(quantiteCommandee);
+            modifierTailleQuantite(produit, taille, quantiteCommandee);
         }
 
+        achatRepository.save(achat);
         return convertToDTO(achatRepository.save(achat));
+    }
+
+    private void modifierTailleQuantite(Produit produit, String nomTaille, int quantiteAchete) {
+        Set<Taille> tailles = produit.getTailles();
+        for (Taille taille : tailles) {
+            if (taille.getNom().equals(nomTaille)) {
+                taille.setQuantiteEnStock(taille.getQuantiteEnStock() + quantiteAchete);
+                break;
+            }
+        }
+        modifierProduitTotalQuantite(produit);
+        produitRepository.save(produit);
+    }
+
+    private void modifierProduitTotalQuantite(Produit produit) {
+        int quantiteTotal = 0;
+        for (Taille taille : produit.getTailles()) {
+            quantiteTotal += taille.getQuantiteEnStock();
+        }
+        produit.setQuantiteEnStock(quantiteTotal);
     }
 
     @Override
@@ -172,7 +198,7 @@ public class AchatServiceImplementation implements AchatService {
         dto.setTotalTTC(achat.getTotalTTC());
         dto.setTva(achat.getTva());
         dto.setFournisseurNom(achat.getFournisseur().getNom());
-        dto.setAdminNom(achat.getAdmin().getNom() + " "+ achat.getAdmin().getPrenom());
+        dto.setAdminNom(achat.getAdmin().getNom() + " " + achat.getAdmin().getPrenom());
         dto.setAdresseReception(
                 achat.getAdresseReception().getNomSociete() + ", " +
                         achat.getAdresseReception().getAdresse() + ", " +

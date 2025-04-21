@@ -19,7 +19,7 @@ public interface ProduitService {
 
     public String supprimerProduit(Long idProduit, String jwt) throws ProduitException;
 
-    public Page<ProduitClientResponse> avoirTousProduits(String categorie, List<String> couleurs, List<String> tailles, Integer prixMin, Integer prixMax, String trie, String stock, Integer numeroPage, Integer taillePage);
+    public Page<ProduitClientResponse> avoirTousProduits(String categorie, String couleurs, String tailles, Integer prixMin, Integer prixMax, String trie, String stock, Integer numeroPage, Integer taillePage);
     public List<Produit> chercherTousProduits();
 
     void ajouterImageProduit(Long idProduit, String image,String jwt) throws ProduitException;

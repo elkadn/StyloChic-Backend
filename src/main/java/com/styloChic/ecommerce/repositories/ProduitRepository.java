@@ -1,6 +1,7 @@
 package com.styloChic.ecommerce.repositories;
 
 import com.styloChic.ecommerce.exceptions.ProduitException;
+import com.styloChic.ecommerce.models.Couleur;
 import com.styloChic.ecommerce.models.Produit;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +33,26 @@ public interface ProduitRepository extends JpaRepository<Produit,Long> {
     List<String> findDistinctTailleNomsNative();
 
 
+    boolean existsByCouleur(Couleur couleur);
 
 
+    //ChatBot
+    @Query("SELECT p FROM Produit p JOIN p.categorie c JOIN p.couleur co " +
+            "WHERE LOWER(c.nom) LIKE LOWER(CONCAT('%',:type,'%')) " +
+            "AND LOWER(co.nom) LIKE LOWER(CONCAT('%',:couleur,'%')) " +
+            "AND p.quantiteEnStock > 0")
+    List<Produit> findByCategorieNomAndCouleurNom(
+            @Param("type") String type,
+            @Param("couleur") String couleur);
 
+
+    @Query("SELECT p FROM Produit p JOIN p.categorie c " +
+            "WHERE LOWER(c.nom) LIKE LOWER(CONCAT('%',:type,'%')) " +
+            "AND p.quantiteEnStock > 0")
+    List<Produit> findByCategorieNom(@Param("type") String type);
+
+    @Query("SELECT p FROM Produit p JOIN p.couleur co " +
+            "WHERE LOWER(co.nom) LIKE LOWER(CONCAT('%',:couleur,'%')) " +
+            "AND p.quantiteEnStock > 0")
+    List<Produit> findByCouleurNom(@Param("couleur") String couleur);
 }

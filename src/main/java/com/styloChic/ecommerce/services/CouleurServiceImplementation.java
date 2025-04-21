@@ -6,6 +6,7 @@ import com.styloChic.ecommerce.exceptions.CouleurException;
 import com.styloChic.ecommerce.models.Couleur;
 import com.styloChic.ecommerce.models.Utilisateur;
 import com.styloChic.ecommerce.repositories.CouleurRepository;
+import com.styloChic.ecommerce.repositories.ProduitRepository;
 import com.styloChic.ecommerce.repositories.UtilisateurRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,9 @@ public class CouleurServiceImplementation implements CouleurService {
 
     @Autowired
     private JwtProvider jwtProvider;
+
+    @Autowired
+    private ProduitRepository produitRepository;
 
     private Utilisateur verifierAdmin(String jwt) throws CouleurException {
         String email = jwtProvider.getEmailFromToken(jwt);
@@ -96,12 +100,13 @@ public class CouleurServiceImplementation implements CouleurService {
         Couleur couleur = couleurRepository.findById(id)
                 .orElseThrow(() -> new CouleurException("Couleur introuvable avec l'ID : " + id));
 
-
-        if (couleurRepository.count() > 0) {
+        if (produitRepository.existsByCouleur(couleur)) {
             throw new CouleurException("Impossible de supprimer cette couleur car elle est liée à des produits !");
         }
+
         couleurRepository.delete(couleur);
     }
+
 
     @Override
     public long compterCouleurs(String jwt) throws CouleurException {

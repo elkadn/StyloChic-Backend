@@ -33,4 +33,13 @@ public interface CategorieRepository extends JpaRepository<Categorie,Long> {
             "GROUP BY c.nom")
     List<Object[]> avoirVentePaCategorie();
 
+
+
+    @Query("SELECT c FROM Categorie c WHERE c.categorieParente = :parent")
+    List<Categorie> findByCategorieParente(@Param("parent") Categorie parent);
+
+    @Query("SELECT c.nom FROM Categorie c WHERE c.niveau = :niveau")
+    List<String> findNomsByNiveau(@Param("niveau") int niveau);
+
+
 }

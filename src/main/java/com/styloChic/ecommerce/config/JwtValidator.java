@@ -23,6 +23,18 @@ import java.util.List;
 public class JwtValidator extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
+        if (request.getRequestURI().equals("/chatbot")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        // Étape 2: Vérifier si c'est une requête OPTIONS (pré-vol CORS)
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String jwt = request.getHeader(JwtConstant.JWT_HEADER);
         if (jwt != null) {
             jwt = jwt.substring(7);
@@ -36,6 +48,11 @@ public class JwtValidator extends OncePerRequestFilter {
                 Authentication authentication = new UsernamePasswordAuthenticationToken(email, null, auths);
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                if (request.getRequestURI().equals("/chatbot")) {
+                    filterChain.doFilter(request, response);
+                    return;
+                }
 
             } catch (Exception e) {
                 throw new BadCredentialsException("Jeton d'accès invalide !");
