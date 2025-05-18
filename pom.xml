@@ -143,6 +143,9 @@
 			<artifactId>spring-security-oauth2-jose</artifactId>
 		</dependency>
 		<!-- Pour Chat Bot -->
+
+
+
 	</dependencies>
 	<build>
 		<plugins>

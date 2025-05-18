@@ -35,12 +35,16 @@ public class AppConfig {
                     @Override
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                         CorsConfiguration cfg = new CorsConfiguration();
-                        cfg.setAllowedOrigins(Arrays.asList(
+                        cfg.addAllowedOriginPattern("*");
+
+                        /*cfg.setAllowedOrigins(Arrays.asList(
                                 "http://localhost:3000",
+                                "http://192.168.0.118:3000",
+                                "http://192.168.0.113:3000",
                                 "https://elkadn-e-commerce-shop.vercel.app",
                                 "https://dialogflow.googleapis.com",
                                 "https://*.ngrok-free.app"
-                        ));
+                        ));*/
 
                         cfg.setAllowedMethods(Collections.singletonList("*"));
                         cfg.setAllowCredentials(true);
